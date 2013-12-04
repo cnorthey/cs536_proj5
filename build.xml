@@ -98,8 +98,8 @@
 	</target>
 	
  <target name ="checkJLexNeeded" >
-   <uptodate property="JLexnotNeeded" targetfile="src/lite.jlex.java" 
-      srcfile="lite.jlex" >
+   <uptodate property="JLexnotNeeded" targetfile="src/csx.jlex.java" 
+      srcfile="csx.jlex" >
    </uptodate>
  </target>
 
@@ -107,26 +107,30 @@
    <mkdir dir="bin">
    </mkdir>
    <java  classpath="." classname="JLex.Main" fork="true" > 
-    <arg value="./lite.jlex">
+    <arg value="./csx.jlex">
     </arg>
    </java>
-    <move file="lite.jlex.java" todir="src">
+    <move file="csx.jlex.java" todir="src">
     </move>
     <javac  includeantruntime="false" srcdir="src" destdir="bin"
-            classpath="."  includes="lite.jlex.java" debug="on">
+            classpath="."  includes="csx.jlex.java" debug="on">
      </javac>
  </target>
 
  <target name ="checkCupNeeded" >
    <uptodate property="CupnotNeeded" targetfile="src/parser.java" 
-      srcfile="lite.cup" >
+      srcfile="csx.cup" >
    </uptodate>
  </target>
 
  <target name ="Cup" depends="checkCupNeeded" unless="CupnotNeeded">
    <mkdir dir="bin">
    </mkdir>
-   <java  classpath="src;bin;." classname="java_cup.Main" fork="true" input="lite.cup" > 
+   <java  classpath="src;bin;." classname="java_cup.Main" fork="true" input="csx.cup" > 
+		<arg value="-expect">
+		</arg>
+		<arg value="1">
+		</arg>
    </java>
     <move file="parser.java" todir="src">
     </move>
