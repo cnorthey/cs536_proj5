@@ -166,6 +166,7 @@ public class CodeGenerating extends Visitor {
 	
 	void visit(nullFieldDeclsNode n){}
 	
+	//translate thisStmt, then moreStmts
 	void visit(stmtsNode n){
 		  //System.out.println ("In stmtsNode\n");
 		  this.visit(n.thisStmt);
@@ -204,6 +205,14 @@ public class CodeGenerating extends Visitor {
 		// No code generation needed
 	}
 	
+	// 1) if source is an array, generate code to clone it and save a
+	//    reference to clone in target
+	// 2) if source is a string lit, generate code to convery it to a
+	//    character array and save a reference in target
+	// 3) if target is an indexed array, generate code to push a ref
+	//    to array (using varName) then translate target.subscriptVal
+	// 4) translate source
+	// 5) generate code to store source's val in target
 	void visit(asgNode n) {
 	 // Translate RHS (an expression)
     	this.visit(n.source);
@@ -213,6 +222,11 @@ public class CodeGenerating extends Visitor {
     	gen("istore", n.target.varName.idinfo.varIndex);
 	}
 	
+	// 1) translate condition
+	// 2) generate code to conditionally branch around thenPart
+	// 3) translate thenPart
+	// 4) generate a jump past elsePart
+	// 5) translate elsePart
 	void visit(ifThenNode n) { //No else statement in CSX lite
 	 	String    out;  // label that will mark end of if stmt
 
@@ -231,6 +245,11 @@ public class CodeGenerating extends Visitor {
         	defineLab(out);
 	}
 
+	// 1) translate outputValue; 
+	// 2) generate call to CXSLib.printString(String) or CSXLib.printChar(char)
+	//    or CSXLib.printInt(int) or Lib.printBool(bool) or Lib.PrintCharArray
+	//    depending on type ot outputValue
+	// 3) translate morePrints
 	void visit(printNode n) {
 		// compute value to be printed onto the stack
     	this.visit(n.outputValue);
@@ -278,11 +297,36 @@ public class CodeGenerating extends Visitor {
 	
 	void visit(intLitNode n) {
 		loadI(n.intval);
+		//n.adr = literal;
 	}
 	
+	// 1) if subscriptVal is null (ie, is not an array): generate code to
+	//    push val at varName's field name or local vaiable index
+	// 2) Otherwise:
+  //    a) generate code to push the array REFERENCE stored at
+	//       varName's field name or local var index
+	//    b) translate subscriptVal
+	//    c) generate an iaload or baload or caload based on varName's
+	//       element type
 	void visit(nameNode n) {
-		 // In CSX lite no arrays exist and all variable names are local variables
-		
+/*
+		if(n.subscriptVal.isNull()){ //if non-array
+			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
+				 n.varName.idinfo.kind == ASTNode.Kinds.Value){ //if scalar var or const
+				if(n.varName.idinfo.adr == global){ //if global has label
+					label = n.varName.idinfo.label;
+					loadGlobalInt(label);
+				}else{ //else local has index
+					n.varIndex = n.varName.idinfo.varIndex;
+					loadLocalInt(n.varIndex);
+				}
+			}else{
+				//is array
+			}
+		}else{
+			//is array
+		}
+*/
 		 // Load value of this variable onto stack using its index
    		gen("iload",n.varName.idinfo.varIndex);
 	}
@@ -296,7 +340,7 @@ public class CodeGenerating extends Visitor {
 	void visit(memberDeclsNode n) {
 		// TODO Auto-generated method stub
 
-	}
+	}s
 
 	
 	void visit(valArgDeclNode n) {
@@ -350,12 +394,14 @@ public class CodeGenerating extends Visitor {
 
 	}
 
-
+	// 1) generate call to CSXLib.readInt() or Lib.readChar()...
+	//    depending on type of targetVar
+	// 2) generate store to targetVar
+	// 3) translate moreReads
 	void visit(readNode n) {
 		// TODO Auto-generated method stub
 
 	}
-
 
 	void visit(nullReadNode n) {}
 
@@ -370,6 +416,7 @@ public class CodeGenerating extends Visitor {
 
 	}
 
+	//translate argValue, then moreRrrrArgs
 	void visit(argsNode n) {
 		// TODO Auto-generated method stub
 
@@ -378,7 +425,9 @@ public class CodeGenerating extends Visitor {
 
 	void visit(nullArgsNode n) {}
 
-	
+	// 1) translate operand
+	// 2) generate JVM instructions cooresponding to operandCode
+	// NOTE: ! can be implemented with EX-OR w 1
 	void visit(unaryOpNode n) {
 		// TODO Auto-generated method stub
 
@@ -390,50 +439,82 @@ public class CodeGenerating extends Visitor {
 
 	void visit(nullExprNode n) {}
 
-	
+	// 1) create assembler labesl for head and exit
+	// 2) if label is non-null, store head and exit in label's
+	//    sym tabel entry
+	// 3) generate head label
+	// 4) translate condition
+	// 5) generate conditional branch to exit label
+	// 6) translate loopBody
+	// 7) generate jump to head
+	// 8) generate exit label
 	void visit(whileNode n) {
 		// TODO Auto-generated method stub
 
 	}
 
+	// 1) translate procArgs
+	// 2) generate a static call to procName
 	void visit(callNode n) {
 		// TODO Auto-generated method stub
 
 	}
 
-
+	// 1) translate functionArgs
+	// 2) generate a static call to procName
 	void visit(fctCallNode n) {
 		// TODO Auto-generated method stub
 
 	}
 
-
+	// 1) if returnVal is non-Null, then translate it and generate an ireturn
+	// 2) otherwise generate a return
 	void visit(returnNode n) {
 		// TODO Auto-generated method stub
 
 	}
 
+	//generate a jump to loop exit label stored in label's sym table entry
 	void visit(breakNode n) {
 		// TODO Auto-generated method stub
 
 	}
 
+	//generate a jump to loop head label stored in label's sym table entry
 	void visit(continueNode n) {
 		// TODO Auto-generated method stub
 
 	}
 
-
+	// 1) if resultType is bool and operand is int or char, then if operand
+	//    is non-zero, generate code to convert it to 1 (ie, true)
+	// 2) if resultType is char and operand is an int, then generate code
+	//    to extract the rightmost 7 bits of operand (ie, AND with mask)  
 	void visit(castNode n) {
 		// TODO Auto-generated method stub
 
 	}
 	
-	 void visit(incrementNode n){
-		// TODO Auto-generated method stub
-		 }
-	 void visit(decrementNode n){
-		// TODO Auto-generated method stub
-		 }
+	// 1) if target.subscriptVal is null:
+	//    a) generate code to push target.varname's value onto stack
+	//    b) push integer 1 onto stack
+	//    c) generate code for iadd
+	//    d) store stack top into target.varName
+	// 2) otherwise:
+	//    a) push array ref stored in target.varName
+	//    b) translate target.subscriptVal
+	//    c) dubplicate top two stack values using dup2
+	//    d) generate an iaload or caload
+	//    e) push integer 1
+	//    f) generate iadd
+	//    g) generate an iastore or castore
+	void visit(incrementNode n){
+	// TODO Auto-generated method stub		 
+	}
+
+	//same as incrementNode except with isub
+	void visit(decrementNode n){
+	// TODO Auto-generated method stub
+	}
 
 }

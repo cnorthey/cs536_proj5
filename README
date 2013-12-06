@@ -7,3 +7,23 @@ Alan Irish    (cs login: irish) 906 591 2819
 DUE DATE: FRIDAY DEC 13, 2013
 
 ********************************************************************************
+
+This project is the final installment of our CSX compiler, the code generator.
+Following the Visitor model of the previous assignment, we will walk the
+abstract syntax tree node by node to generate assembly code for the JVM using
+Jasmine. The main files we will be manipulating are:
+
+ - CodeGenerating.java: 
+
+ - CSX.java:
+
+ - Other relevant files:
+
+
+TO DO::
+ x set up git repo
+ x divvy up AST nodes a la Unparsing and P4
+ - implement part I of instructions
+ - implement part II of instructions
+ - implement part III of instructions
+ - implement part IV of instructions
