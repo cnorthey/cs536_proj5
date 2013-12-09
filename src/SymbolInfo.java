@@ -1,9 +1,9 @@
-/* CS 536: PROJECT 4 - CSX TYPE CHECKER
+/* CS 536: PROJECT 5 - CSX CODE GENERATOR
  * 
  * Caela Northey (cs login: caela)	905 653 2238 
  * Alan Irish    (cs login: irish)  906 591 2819
  *
- * DUE DATE: FRIDAY NOV 22, 2013
+ * DUE DATE: FRIDAY DEC 13, 2013
  *
  ***************************************************
  *  class used to hold information associated w/
@@ -17,16 +17,27 @@ import java.util.ArrayList;
 class SymbolInfo extends Symb {
 	public ASTNode.Kinds kind;
 	public ASTNode.Types type;
-	public ArrayList<ArrayList<parmInfo>> parameters;
-	
+	public ArrayList<ArrayList<parmInfo>> parameters;	
 	int arraySize; //Used by arrays
 	private exprNode[] elements;   //used by arrays
+
+	//P5: used for code generating: global, local, literal, stack, none
+	public CodeGenerating.AdrMode adr; 
+	public String label; 		//for global field names
+	public int varIndex; 		//index of local variables
+	public int intVal; 			//val of int, char or bool lit
+	public String strVal; 	//val of String lit
 
 	public SymbolInfo(String id, ASTNode.Kinds k, ASTNode.Types t){    
 		super(id);
 		kind = k; type = t;
 		parameters = new ArrayList<ArrayList<parmInfo>>();
 		arraySize = 0;
+		adr = CodeGenerating.AdrMode.none;
+		label = null;
+		varIndex = 0;
+		intVal = 0;
+		strVal = null;
 	};
 	
 	public void setArraysize(int size){

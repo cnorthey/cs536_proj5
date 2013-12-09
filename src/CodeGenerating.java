@@ -1,11 +1,20 @@
-import java.io.*;
-/*
+/* CS 536: PROJECT 5 - CSX CODE GENERATOR
+ * 
+ * Caela Northey (cs login: caela)	905 653 2238 
+ * Alan Irish    (cs login: irish)  906 591 2819
+ *
+ * DUE DATE: FRIDAY DEC 13, 2013
+ *
+ ***************************************************
+ *
  *  This Visitor class generates JVM assembler code (using Jasmin's format)
  *  for CSX lite in the Printstream afile. You'll need to extend it to
  *  handle all of CSX. Note that for some AST nodes (like asgNode) code generation
  *  for CSX is more complex than that needed for CSX lite.
  *  All methods marked TODO will have to be completed by you (for full CSX)
  */
+
+import java.io.*;
 
 public class CodeGenerating extends Visitor {
 	
@@ -19,6 +28,15 @@ public class CodeGenerating extends Visitor {
 	
 	CodeGenerating(PrintStream f){
 		afile=f;
+	}
+
+	// Type codes used in CSX
+	public enum AdrModes { 
+		global,
+		local,
+		stack,
+		literal,
+		none
 	}
 
 	static void assertCondition(boolean assertion){
@@ -50,7 +68,6 @@ public class CodeGenerating extends Visitor {
         	afile.println("\t"+opcode+"\t"+operand);
 	}
 
-
 	//  generate an instruction w/ 2 operands
 	void  gen(String opcode, String operand1, String operand2){
         	afile.println("\t"+opcode+"\t"+ operand1+"  "+ operand2);
@@ -63,7 +80,7 @@ public class CodeGenerating extends Visitor {
 
 	//      Generate a new label of form labeln (e.g., label7 or label123)
 	String   genLab(){
-                return "label"+labelCnt++;
+    return "label"+labelCnt++;
 	}
 
 	//      Place a label in generated code
@@ -77,6 +94,69 @@ public class CodeGenerating extends Visitor {
 	
 	void loadI(int val){
 		gen("ldc",val);
+	}
+
+	//generate a load of an int static field onto stack
+	// should look like:
+	//     getstatic CLASS/name I
+	void loadGlobalInt(int val){
+		//gen("getstatic", ,"I");
+	}
+
+	//generate a load of an int local variable onto stack
+	// should look like:
+	//     iload index
+	void loadLocalInt(int val){
+		gen("iload", val);
+	}
+
+	//generate a load of an int static field onto stack
+	// should look like:
+	//     putstatic CLASS/name I
+	void storeGlobalInt(int val){
+		//gen("putstatic", ,"I");
+	}
+
+	//generate a load of an int local variable onto stack
+	// should look like:
+	//     istore index
+	void storeLocalInt(int val){
+		gen("istore", val);
+	}
+
+
+	//compute address associated w name node
+	void computeAdr(nameNode n){
+		if (n.subscriptVal.isNull()){
+			//simple unsubscribed identifier
+			if(n.varName.idinfo.kind == ASTNode.Kinds.Var){ //scalar
+				if(n.varName.idinfo.adr == AdrMode.global){ 
+					n.adr = AdrMode.global;
+					n.label = name.varName.idinfo.label;
+				} else { // local
+					n.adr = AdrMode.local;
+					n.varIndex = n.varName.idinfo.varIndex;
+				}
+			} else {
+				 //array
+			}
+		} else {
+			//subscripted
+		}
+	}
+
+	void storeId(identNode id){
+		//id is a scalar var
+		if(id.idinfo.kind == ASTNode.Kinds.Var ||
+			 id.idinfo.kind == ASTNode.Kinds.Var ){
+			if (id.idinfo.adr == AdrModes.global){
+				storeGlobalInt(id.idinfo.label);
+			} else { //local
+				storeLocalInt(id.idinfo.varIndex);
+			}
+		} else {
+			//array
+		}
 	}
 
 	static Boolean isRelationalOp(int op) {
@@ -214,12 +294,9 @@ public class CodeGenerating extends Visitor {
 	// 4) translate source
 	// 5) generate code to store source's val in target
 	void visit(asgNode n) {
-	 // Translate RHS (an expression)
-    	this.visit(n.source);
-
-    // Value to be stored is now on the stack
-    // Save it into target variable, using the variable's index
-    	gen("istore", n.target.varName.idinfo.varIndex);
+		computeAdr(n.target); //1, 2, 3
+    this.visit(n.source); //step 4
+		storeName(n.target); //step 5
 	}
 	
 	// 1) translate condition
@@ -250,12 +327,28 @@ public class CodeGenerating extends Visitor {
 	//    or CSXLib.printInt(int) or Lib.printBool(bool) or Lib.PrintCharArray
 	//    depending on type ot outputValue
 	// 3) translate morePrints
+	// NOTE: can only print int, bool, chars, char arrays, and strings
 	void visit(printNode n) {
-		// compute value to be printed onto the stack
-    	this.visit(n.outputValue);
-    
-    // Call CSX library routine "printInt(int i)"
-    	gen("invokestatic"," CSXLib/printInt(I)V");
+  	this.visit(n.outputValue); //step 1
+		if (n.outputValue.kind == ASTNode.Kinds.Array ||
+				n.outputValue.kind == ASTNode.Kinds.ArrayParm){ //step 2
+				gen("invokestatic"," CSXLib/printCharArray([C)V");
+		}else if (n.outputValue.kind == ASTNode.Kinds.String){
+    	gen("invokestatic"," CSXLib/printString(LJava/lang/String;)V");
+		}else{ 
+			switch (n.outputValue.type){
+				case ASTNode.Types.Integer:
+					gen("invokestatic"," CSXLib/printInteger(I)V");
+					break;
+				case ASTNode.Types.Boolean:
+					gen("invokestatic"," CSXLib/printBool(Z)V");
+					break;
+				case ASTNode.Types.Character:
+					gen("invokestatic"," CSXLib/printChar(C)V");
+					break;
+			}
+		}
+		this.visit(n.morePrints); //step 3
 	}
 
 	void visit(nullPrintNode n) {}
@@ -297,7 +390,7 @@ public class CodeGenerating extends Visitor {
 	
 	void visit(intLitNode n) {
 		loadI(n.intval);
-		//n.adr = literal;
+		n.adr = literal;
 	}
 	
 	// 1) if subscriptVal is null (ie, is not an array): generate code to
@@ -309,12 +402,12 @@ public class CodeGenerating extends Visitor {
 	//    c) generate an iaload or baload or caload based on varName's
 	//       element type
 	void visit(nameNode n) {
-/*
-		if(n.subscriptVal.isNull()){ //if non-array
+
+		if(n.subscriptVal.isNull()){ //if non-subscripted
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
 				 n.varName.idinfo.kind == ASTNode.Kinds.Value){ //if scalar var or const
-				if(n.varName.idinfo.adr == global){ //if global has label
-					label = n.varName.idinfo.label;
+				if(n.varName.idinfo.adr == AdrMode.global){ //if global, has label
+					String label = n.varName.idinfo.label;
 					loadGlobalInt(label);
 				}else{ //else local has index
 					n.varIndex = n.varName.idinfo.varIndex;
@@ -324,11 +417,12 @@ public class CodeGenerating extends Visitor {
 				//is array
 			}
 		}else{
-			//is array
+			//is subscripted
 		}
-*/
+/*
 		 // Load value of this variable onto stack using its index
    		gen("iload",n.varName.idinfo.varIndex);
+*/
 	}
 
 	
@@ -375,13 +469,15 @@ public class CodeGenerating extends Visitor {
 	}
 
 	void visit(trueNode n) {
-		// TODO Auto-generated method stub
-
+		loadI(1);
+		n.adr = literal;
+		//n.intval = 1;
 	}
 
 	void visit(falseNode n) {
-		// TODO Auto-generated method stub
-
+		loadI(0);
+		n.adr = literal;
+		//n.intval = 0;
 	}
 
 	void visit(constDeclNode n) {
@@ -399,15 +495,23 @@ public class CodeGenerating extends Visitor {
 	// 2) generate store to targetVar
 	// 3) translate moreReads
 	void visit(readNode n) {
-		// TODO Auto-generated method stub
-
+		//computeAaaaaadr(n.targetVar);
+		if (n.targetVar.varName.idinfo.type == ASTNode.Types.Integer){ //step 1
+			gen("invokestatic"," CSXLib/readInt()I");
+		}else{
+			gen("invokestatic"," CSXLib/readChar()C");
+		}
+		//storeName(n.targetVar); //step 2
+		this.visit(n.moreReads); //step 3
 	}
 
 	void visit(nullReadNode n) {}
 
 
 	void visit(charLitNode n) {
-		// TODO Auto-generated method stub
+		loadI(n.charval);
+		n.adr = literal;
+		n.intval = n.charval;
 
 	}
 

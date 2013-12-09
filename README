@@ -11,14 +11,23 @@ DUE DATE: FRIDAY DEC 13, 2013
 This project is the final installment of our CSX compiler, the code generator.
 Following the Visitor model of the previous assignment, we will walk the
 abstract syntax tree node by node to generate assembly code for the JVM using
-Jasmine. The main files we will be manipulating are:
+Jasmine to produce the bytecode. The main files we will be manipulating are:
 
- - CodeGenerating.java: 
+ - CodeGenerating.java: first, we added an enum to track different addressing
+   modes (global, local, literal, stack, and none).
 
- - CSX.java:
+ - SymbolInfo.java: added additional fields to be used in conjunction with
+   addressing mode considerations. Besides one for an ArdMode value, other
+   fields include a String label if the Symbol is a global variable, an int
+   varIndex if the Symbol is a local variable, etc. See Part I of the Code
+   Generation Routines for more information.
+
+ - ast.java: one change was made to the exprNode constuctor; a field for an
+   addressing mode was added. 
+
+ - CSX.java: main driver for the CSX compilation process.
 
  - Other relevant files:
-
 
 TO DO::
  x set up git repo
