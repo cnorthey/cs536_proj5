@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* CS 536: PROJECT 5 - CSX CODE GENERATOR
  * 
  * Caela Northey (cs login: caela)	905 653 2238 
@@ -14,14 +13,10 @@
  *  for CSX is more complex than that needed for CSX lite.
  *  All methods marked TODO will have to be completed by you (for full CSX)
  */
-=======
-import java.io.*;
 
+import java.io.*;
 import ASTNode.Kinds;
 import ASTNode.Types;
->>>>>>> ef1d03e1e07699df121c9ce47120f7defc5bffb8
-
-import java.io.*;
 
 public class CodeGenerating extends Visitor {
 
