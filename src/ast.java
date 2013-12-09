@@ -1,8 +1,16 @@
-
-/*  This defines AST classes for CSX
+/* CS 536: PROJECT 5 - CSX CODE GENERATOR
+ * 
+ * Caela Northey (cs login: caela)	905 653 2238 
+ * Alan Irish    (cs login: irish)  906 591 2819
+ *
+ * DUE DATE: FRIDAY DEC 13, 2013
+ *
+ ***************************************************
+ *  This defines AST classes for CSX
  *  Little, if any, of this needs to be changed
  * 
  */
+
 // abstract superclass; only subclasses are actually created   
 abstract class ASTNode {
 
