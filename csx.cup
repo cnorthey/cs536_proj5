@@ -16,6 +16,15 @@
 /* Preliminaries to set up and use the scanner.  */
 
 import java_cup.runtime.*;
+
+action code {:
+  // only need to create one of these ever
+  static public	intTypeNode		INTNode  = new intTypeNode(0,0);
+  static public	boolTypeNode	BOOLNode = new boolTypeNode(0,0);
+  static public	charTypeNode	CHARNode = new charTypeNode(0,0);
+  static public voidTypeNode	VOIDNode = new voidTypeNode(0,0);
+:};
+
 parser code {:
  public void syntax_error(Symbol cur_token)
      {
@@ -23,15 +32,23 @@ parser code {:
 			String.valueOf(((CSXToken)cur_token.value).linenum),  
 			null);
      }
+     public void report_fatal_error( String   message, Object   info)
+	 throws java.lang.Exception
+     {
+	   done_parsing();
+ 	   report_error(message, info);
+	   throw new SyntaxErrorException();
+     }     
 :};
+
 init with {:              :};
 scan with {: return Scanner.next_token(); :};
 
 /* Terminals (tokens returned by the scanner). */
-terminal CSXIdentifierToken IDENTIFIER; 
+terminal CSXIdentifierToken 	IDENTIFIER; 
 terminal CSXIntLitToken			INTLIT;
 terminal CSXCharLitToken		CHARLIT;
-terminal CSXStringLitToken	STRLIT;
+terminal CSXStringLitToken		STRLIT;
 terminal CSXToken     			SEMI, LPAREN, RPAREN, ASG, LBRACE, RBRACE;
 terminal CSXToken     			PLUS, MINUS, EQ, NOTEQ, rw_IF;
 terminal CSXToken     			rw_INT, rw_BOOL;
@@ -67,28 +84,27 @@ terminal CSXToken TIMES;
 /* Non terminals */
 non terminal classNode					prog; 
 non terminal stmtsOption				stmts;  
-non terminal stmtNode						stmt;
-non terminal exprNode						expr;
-non terminal exprNode						term;
-non terminal exprNode						factor;
-non terminal exprNode						unit;
+non terminal stmtNode					stmt;
+non terminal exprNode					expr;
+non terminal exprNode					term;
+non terminal exprNode					factor;
+non terminal exprNode					unit;
 non terminal identNode					ident;
-non terminal fieldDeclsOption		fielddecls; 
-non terminal declNode						fielddecl;
-non terminal typeNode						type;
-non terminal Symbol		   	  		optionalSemi;
-non terminal intLitNode		    	intliteral;
+non terminal fieldDeclsOption			fielddecls; 
+non terminal declNode					fielddecl;
+non terminal typeNode					type;
+non terminal Symbol		   	  			optionalSemi;
 non terminal argDeclNode				argdecl;
-non terminal argDeclsOption			argdecls;
-non terminal methodDeclNode			methoddecl;
-non terminal methodDeclsOption	methoddecls;
-non terminal memberDeclsNode		memberdecls;
-non terminal argsNodeOption			args;
-non terminal readNode						readlist;
+non terminal argDeclsOption				argdecls;
+non terminal methodDeclNode				methoddecl;
+non terminal methodDeclsOption			methoddecls;
+non terminal memberDeclsNode			memberdecls;
+non terminal argsNodeOption				args;
+non terminal readNode					readlist;
 non terminal printNode					printlist;
-non terminal exprNode						pri;
-non terminal exprNode						unary;
-non terminal nameNode						name;
+non terminal exprNode					pri;
+non terminal exprNode					unary;
+non terminal nameNode					name;
 
 start with prog;
 
@@ -159,7 +175,7 @@ methoddecl	::= rw_VOID:v ident:i LPAREN RPAREN LBRACE fielddecls:f stmts:s RBRAC
 													stmts:s RBRACE optionalSemi
 			{:
 				RESULT= new methodDeclNode(i, args, t, f, s, t.linenum, 
-												t.colnum);
+																	t.colnum);
 			:}
 			;
 				
@@ -351,12 +367,14 @@ printlist	::= expr:e COMMA printlist:pl
 
 expr 	::= expr:e COR term:t
 		{:
-			RESULT = new binaryOpNode(e, sym.COR, t, e.linenum, e.colnum);
+			RESULT = new binaryOpNode(e, sym.COR, t, e.linenum, e.colnum, 
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	expr:e CAND term:t
 		{:
-			RESULT = new binaryOpNode(e, sym.CAND,t, e.linenum, e.colnum);
+			RESULT = new binaryOpNode(e, sym.CAND,t, e.linenum, e.colnum, 
+														ASTNode.Types.Boolean);
 		:} 
 		|	term:t
 		{:
@@ -366,32 +384,38 @@ expr 	::= expr:e COR term:t
 
 term	::= factor:f1 LT factor:f2
 		{:
-			RESULT = new binaryOpNode(f1, sym.LT, f2, f1.linenum, f1.colnum);
+			RESULT = new binaryOpNode(f1, sym.LT, f2, f1.linenum, f1.colnum, 
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	factor:f1 GT factor:f2
 		{:
-			RESULT = new binaryOpNode(f1, sym.GT, f2, f1.linenum, f1.colnum);
+			RESULT = new binaryOpNode(f1, sym.GT, f2, f1.linenum, f1.colnum, 
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	factor:f1 LEQ factor:f2
 		{:
-			RESULT = new binaryOpNode(f1, sym.LEQ, f2, f1.linenum, f1.colnum);
+			RESULT = new binaryOpNode(f1, sym.LEQ, f2, f1.linenum, f1.colnum,
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	factor:f1 GEQ factor:f2
 		{:
-			RESULT = new binaryOpNode(f1, sym.GEQ, f2, f1.linenum, f1.colnum);
+			RESULT = new binaryOpNode(f1, sym.GEQ, f2, f1.linenum, f1.colnum, 
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	factor:f1 EQ factor:f2
 		{:
-			RESULT = new binaryOpNode(f1, sym.EQ, f2, f1.linenum, f1.colnum);
+			RESULT = new binaryOpNode(f1, sym.EQ, f2, f1.linenum, f1.colnum, 
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	factor:f1 NOTEQ factor:f2
 		{:
-			RESULT = new binaryOpNode(f1, sym.NOTEQ, f2, f1.linenum, f1.colnum);
+			RESULT = new binaryOpNode(f1, sym.NOTEQ, f2, f1.linenum, f1.colnum, 
+														ASTNode.Types.Boolean);
 		:}
 		
 		|	factor:f
@@ -402,12 +426,14 @@ term	::= factor:f1 LT factor:f2
 
 factor	::=	factor:f PLUS pri:p
 		{:
-			RESULT = new binaryOpNode(f, sym.PLUS, p, f.linenum, f.colnum);
+			RESULT = new binaryOpNode(f, sym.PLUS, p, f.linenum, f.colnum,
+														ASTNode.Types.Integer);
 		:}
 		
 		|	factor:f MINUS pri:p
 		{:
-			RESULT = new binaryOpNode(f, sym.MINUS, p, f.linenum, f.colnum);
+			RESULT = new binaryOpNode(f, sym.MINUS, p, f.linenum, f.colnum, 
+														ASTNode.Types.Integer);
 		:}
 		
 		|	pri:p
@@ -418,12 +444,14 @@ factor	::=	factor:f PLUS pri:p
 
 pri 	::= pri:p TIMES unary:u
 		{:
-			RESULT = new binaryOpNode(p, sym.TIMES, u, p.linenum, p.colnum);
+			RESULT = new binaryOpNode(p, sym.TIMES, u, p.linenum, p.colnum, 
+														ASTNode.Types.Integer);
 		:}
 		
 		| pri:p SLASH unary:u
 		{:
-			RESULT = new binaryOpNode(p, sym.SLASH, u, p.linenum, p.colnum);
+			RESULT = new binaryOpNode(p, sym.SLASH, u, p.linenum, p.colnum, 
+														ASTNode.Types.Integer);
 		:}
 		
 		| unary:u

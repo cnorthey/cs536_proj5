@@ -27,6 +27,8 @@ class SymbolInfo extends Symb {
 	public int varIndex; 		//index of local variables
 	public int intVal; 			//val of int, char or bool lit
 	public String strVal; 	//val of String lit
+	public int numberOfLocals;
+	public String methodReturnCode;
 
 	public SymbolInfo(String id, ASTNode.Kinds k, ASTNode.Types t){    
 		super(id);
@@ -38,6 +40,7 @@ class SymbolInfo extends Symb {
 		varIndex = 0;
 		intVal = 0;
 		strVal = null;
+		numberOfLocals = 0;
 	};
 	
 	public void setArraysize(int size){
