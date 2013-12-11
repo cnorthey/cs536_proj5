@@ -98,6 +98,10 @@ public class CodeGenerating extends Visitor {
 		gen("goto",label);
 	}
 
+	void branchZ(String label){
+		gen("ifeq",label);
+	}
+
 	void loadI(int val){
 		gen("ldc",val);
 	}
@@ -128,24 +132,39 @@ public class CodeGenerating extends Visitor {
 		gen("istore", index);
 	}
 
-
 	//compute address associated w name node
+	//DON'T load value addressed onto stack
 	void computeAdr(nameNode n){
-		if (n.subscriptVal.isNull()){
-			//simple unsubscribed identifier
-			if(n.varName.idinfo.kind == ASTNode.Kinds.Var){ //scalar
-				if(n.varName.idinfo.adr == AdrMode.global){ 
-					n.adr = AdrMode.global;
-					n.label = name.varName.idinfo.label;
+		if (n.subscriptVal.isNull()){ //simple unsubscribed identifier
+			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
+				 n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
+				if(n.varName.idinfo.adr == AdrModes.global){ 
+					n.adr = AdrModes.global;
+					n.label = n.varName.idinfo.label;
 				} else { // local
-					n.adr = AdrMode.local;
+					n.adr = AdrModes.local;
 					n.varIndex = n.varName.idinfo.varIndex;
 				}
-			} else {
-				 //array
+			} else { //array
+				//push ref to target to check length
+				if(n.varName.idinfo.adr == AdrModes.global){
+					n.label = n.varName.idinfo.label;
+					loadGlobalReference(n.label, arrayTypeCode(n.varName.idinfo.type));
+				} else { //local
+					n.varIndex = n.varName.idinfo.varIndex;
+					loadLocalReference(n.varIndex);
+				}
 			}
-		} else {
-			//subscripted
+		} else { //subscripted
+			//push ref first
+			if(n.varName.idinfo.adr == AdrModes.global){
+				n.label = n.varName.idinfo.label;
+				loadGlobalReference(n.label, arrayTypeCode(n.varName.idinfo.type));
+			} else { //local
+				n.varIndex = n.varName.idinfo.varIndex;
+				loadLocalReference(n.varIndex);
+			}
+			this.visit(n.subscriptVal);
 		}
 	}
 
@@ -168,6 +187,54 @@ public class CodeGenerating extends Visitor {
 			//Handle arrays
 		}
 	}
+
+	void storeName(nameNode n){
+		if (n.subscriptVal.isNull()){ //simple unsubscribed identifier
+			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
+				 n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
+				if(n.varName.idinfo.adr == AdrModes.global){ 
+					storeGlobalInt(n.label);
+				} else { // local
+					storeLocalInt(n.varIndex);
+				}
+			} else { //array
+				//push ref to target to check length
+				switch (n.type){
+					case ASTNode.Types.Integer:
+						gen("invokestatic","CSXLib/checkIntArrayLength([I[I)[I");
+						break;
+					case ASTNode.Types.Boolean:
+						gen("invokestatic","CSXLib/checkBoolArrayLength([Z[Z)[Z");
+						break;
+					case ASTNode.Types.Character:
+						gen("invokestatic","CSXLib/checkCharArrayLength([C[C)[C");
+						break;
+				}
+				//store source array into target var
+				if(n.varName.idinfo.adr == AdrModes.global){
+					n.label = n.varName.idinfo.label;
+					storeGlobalReference(n.label, arrayTypeCode(n.varName.idinfo.type));
+				} else { //local
+					n.varIndex = n.varName.idinfo.varIndex;
+					storeLocalReference(n.varIndex);
+				}
+			}
+		} else { //subscripted
+			//ref to target array, subscripted expr, and source expr
+			//are already pushed; now store source val into array
+			switch(n.type){
+				case ASTNode.Types.Integer: //iaload
+					gen("iaload");
+					break;
+				case ASTNode.Types.Boolean: //baload
+					gen("baload");
+					break;
+				case ASTNode.Types.Character: //caload
+					gen("caload");
+					break;
+			}
+		}
+	}//end storeName()
 	
 	static Boolean isRelationalOp(int op) {
 		switch (op) {
@@ -501,7 +568,6 @@ public class CodeGenerating extends Visitor {
 	void visit(voidTypeNode n) {
 		// No code generation needed
 	}
-<<<<<<< HEAD
 	
 	// 1) if source is an array, generate code to clone it and save a
 	//    reference to clone in target
@@ -512,32 +578,56 @@ public class CodeGenerating extends Visitor {
 	// 4) translate source
 	// 5) generate code to store source's val in target
 	void visit(asgNode n) {
-		computeAdr(n.target); //1, 2, 3
+		computeAdr(n.target);
     this.visit(n.source); //step 4
+
+		//check if source should be cloned or converted,
+		if (n.source.kind == ASTNode.Kinds.Array ||
+				n.source.kind == ASTNode.Kinds.ArrayParm){ //step 1
+			switch (n.type){
+				case ASTNode.Types.Integer:
+					gen("invokestatic"," CSXLib/cloneIntArrayLength([I)[I");
+					break;
+				case ASTNode.Types.Boolean:
+					gen("invokestatic"," CSXLib/cloneBoolArrayLength([Z)[Z");
+					break;
+				case ASTNode.Types.Character:
+					gen("invokestatic"," CSXLib/cloneCharArrayLength([C)[C");
+					break;
+				}
+		}else if (n.source.kind == ASTNode.Kinds.String){ //step 2
+			gen("invokestatic"," CSXLib/convertString(LJava/lang/String;)[C");
+		}
+
+		//val to store now on stack; store to LHS
 		storeName(n.target); //step 5
 	}
 	
-	// 1) translate condition
+	// 1) translate condition (onto stack)
 	// 2) generate code to conditionally branch around thenPart
 	// 3) translate thenPart
 	// 4) generate a jump past elsePart
 	// 5) translate elsePart
+	// should look like:
+	//       {eval control expr onto stack top}
+	//       ifeq L1    ; branch to L2 if top of stack == 0 (ie, false)
+	//       {code for then part}
+	//       goto  L2
+	//   L1: 
+	//       {code for else part}
+	//   L2:
 	void visit(ifThenNode n) { //No else statement in CSX lite
-		String    out;  // label that will mark end of if stmt
-
-		// translate boolean condition, pushing it onto the stack
-		this.visit(n.condition);
-
-		out = genLab();
-
-		// generate conditional branch around then stmt
-		gen("ifeq",out);
-
-		// translate then part
-		this.visit(n.thenPart);
-
-		// generate label marking end of if stmt
-		defineLab(out);
+		String endLab;  // label that will mark end of if stmt
+		String elseLab;
+		this.visit(n.condition); //step 1
+		elseLab = genLab();
+		branchZ(elseLab); //step 2
+		this.visit(n.thenPart); //step 3
+		endLab = genLab();
+		branch(endLab); //step 4
+		defineLab(elseLab);
+		this.visit(n.elsePart); //step 5
+		defineLab(endPart);
 	}
 
 	// 1) translate outputValue; 
@@ -619,22 +709,50 @@ public class CodeGenerating extends Visitor {
 	//    c) generate an iaload or baload or caload based on varName's
 	//       element type
 	void visit(nameNode n) {
-
+		n.adr = AdrModes.stack;
 		if(n.subscriptVal.isNull()){ //if non-subscripted
-			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
-				 n.varName.idinfo.kind == ASTNode.Kinds.Value){ //if scalar var or const
-				if(n.varName.idinfo.adr == AdrMode.global){ //if global, has label
+			if(n.varName.idinfo.kind == ASTNode.Kinds.Var || //if scalar var or const
+				 n.varName.idinfo.kind == ASTNode.Kinds.Value ||
+				 n.varName.idinfo.kind == ASTNode.Kinds.Value ){ 
+				if(n.varName.idinfo.adr == AdrModes.global){ //if global, has label
 					String label = n.varName.idinfo.label;
 					loadGlobalInt(label);
 				}else{ //else local has index
 					n.varIndex = n.varName.idinfo.varIndex;
 					loadLocalInt(n.varIndex);
 				}
-			}else{
-				//is array
+			}else{ //array or array param
+				if(n.varName.idinfo.adr == AdrModes.global){ //global
+					String label = n.varName.idinfo.label;
+					loadGlobalReference(label);
+				}else{ //else local
+					n.varIndex = n.varName.idinfo.varIndex;
+					loadLocalReference(n.varIndex);
+				}
 			}
-		}else{
-			//is subscripted
+		}else{ //is subscripted
+			//push reference first
+			if(n.varName.idinfo.adr == AdrModes.global){ //global
+					String label = n.varName.idinfo.label;
+					loadGlobalReference(label);
+				}else{ //else local
+					n.varIndex = n.varName.idinfo.varIndex;
+					loadLocalReference(n.varIndex);
+				}
+			//then compute subscript val
+			this.visit(n.subscriptVal);
+			//then load array element onto stack
+			switch(n.type){
+				case ASTNode.Types.Integer: //iaload
+					gen("iaload");
+					break;
+				case ASTNode.Types.Boolean: //baload
+					gen("baload");
+					break;
+				case ASTNode.Types.Character: //caload
+					gen("caload");
+					break;
+			}
 		}
 /*
 		 // Load value of this variable onto stack using its index
@@ -843,7 +961,7 @@ public class CodeGenerating extends Visitor {
 		}else{
 			gen("invokestatic"," CSXLib/readChar()C");
 		}
-		//storeName(n.targetVar); //step 2
+		storeName(n.targetVar); //step 2
 		this.visit(n.moreReads); //step 3
 	}
 
@@ -894,9 +1012,24 @@ public class CodeGenerating extends Visitor {
 	// 6) translate loopBody
 	// 7) generate jump to head
 	// 8) generate exit label
+	// looks like:
+	//    L1: {eval control expr onto stack}
+	//        ifeq l2    ; branch to L2 if top of stack == 0 (ie, false)
+	//        {code for loop body}
+	//    L2:
 	void visit(whileNode n) {
-		// TODO Auto-generated method stub
-
+		String top = genLab(); //step 1
+		String bottom = getLab();
+		if (! n.label.isNull()){ //step 2
+			((identNode)n.label).idinfo.topLabel = top;
+			((identNode)n.label).idinfo.bottomLabel = bottom;
+		}
+		defineLab(top); //step 3
+		this.visit(n.condition); //step 4
+		branchZ(bottom); //step 5
+		this.visit(n.loopBody); //step 6
+		branch(top); // step 7
+		defineLab(bottom); // step 8
 	}
 
 	// 1) translate procArgs
@@ -922,22 +1055,33 @@ public class CodeGenerating extends Visitor {
 
 	//generate a jump to loop exit label stored in label's sym table entry
 	void visit(breakNode n) {
-		// TODO Auto-generated method stub
-
+		branch(n.label.idinfo.bottomLabel);
 	}
 
 	//generate a jump to loop head label stored in label's sym table entry
 	void visit(continueNode n) {
-		// TODO Auto-generated method stub
+		branch(n.label.idinfo.topLabel);
 
 	}
 
 	// 1) if resultType is bool and operand is int or char, then if operand
 	//    is non-zero, generate code to convert it to 1 (ie, true)
 	// 2) if resultType is char and operand is an int, then generate code
-	//    to extract the rightmost 7 bits of operand (ie, AND with mask)  
+	//    to extract the rightmost 7 bits of operand (ie, AND with mask)
+	// NOTE:
+	// in all other cases, the value of operand may be used w/out modification
 	void visit(castNode n) {
-		// TODO Auto-generated method stub
+		this.visit(n.operand);
+		if((n.operand.type == ASTNode.Types.Integer || //step 1
+				n.operand.type == ASTNode.Types.Integer)&&
+        n.resultType instanceof boolTypeNode){
+			loadI(0);
+			genRelationalOP(sym.NOTEQ);
+		} else if (n.operand.type == ASTNode.Types.Integer && //step 2
+               n.resultType instanceof charTypeNode){
+			loadI(127); //ie, 1111111 in binary
+			gen("iand");
+		}
 
 	}
 	
@@ -955,12 +1099,60 @@ public class CodeGenerating extends Visitor {
 	//    f) generate iadd
 	//    g) generate an iastore or castore
 	void visit(incrementNode n){
-	// TODO Auto-generated method stub		 
+		if(n.target.subscriptVal.isNull()){ //un-subscripted, step 1
+			this.visit(n.target); //step 1.a
+			loadI(1); //step 1.b
+			gen("iadd"); //step 1.c
+			computeAdr(n.target);
+			storeName(n.target); //step 1.d
+		}else { //subscripted, step 2
+			computeAdr(n.target); //step 2.a
+			//this.visit(n.target); //step 2.b ??
+			gen("dup2"); //one for load, one for store, step 2.c
+			switch(n.target.type){ //load array element onto stack, step 2.d
+				case ASTNode.Types.Integer:
+					gen("iaload");
+					break;
+				case ASTNode.Types.Boolean:
+					gen("baload");
+					break;
+				case ASTNode.Types.Character:
+					gen("caload");
+					break;
+			}
+			loadI(1); //step 2.e
+			gen("iadd"); //step 2.f
+			storeName(n.target); //step 2.g
+		}
 	}
 
 	//same as incrementNode except with isub
 	void visit(decrementNode n){
-	// TODO Auto-generated method stub
+if(n.target.subscriptVal.isNull()){ //un-subscripted, step 1
+			this.visit(n.target); //step 1.a
+			loadI(1); //step 1.b
+			gen("isub"); //step 1.c
+			computeAdr(n.target);
+			storeName(n.target); //step 1.d
+		}else { //subscripted, step 2
+			computeAdr(n.target); //step 2.a
+			//this.visit(n.target); //step 2.b ??
+			gen("dup2"); //one for load, one for store, step 2.c
+			switch(n.target.type){ //load array element onto stack, step 2.d
+				case ASTNode.Types.Integer:
+					gen("iaload");
+					break;
+				case ASTNode.Types.Boolean:
+					gen("baload");
+					break;
+				case ASTNode.Types.Character:
+					gen("caload");
+					break;
+			}
+			loadI(1); //step 2.e
+			gen("isub"); //step 2.f
+			storeName(n.target); //step 2.g
+		}
 
 	}
 
