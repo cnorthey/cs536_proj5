@@ -697,6 +697,7 @@ abstract class exprNode extends exprNodeOption {
 	protected Types   type; // Used for typechecking: the type of this node
 	protected Kinds   kind; // Used for typechecking: the kind of this node
 	protected CodeGenerating.AdrMode adr; //used for code generating
+	protected int intval; 
 	protected String label;
 	protected int varIndex;
 
@@ -712,7 +713,9 @@ abstract class exprNode extends exprNodeOption {
         
 	exprNode(int l,int c,Types t,Kinds k) {
 		super(l,c);
-                type = t; kind = k; ard = CodeGenerating.AdrMode.none;
+                type = t; 
+                kind = k; 
+                adr = CodeGenerating.AdrMode.none;
         };
 
 };

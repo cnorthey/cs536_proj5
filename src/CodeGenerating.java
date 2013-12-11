@@ -107,8 +107,8 @@ public class CodeGenerating extends Visitor {
 	//generate a load of an int static field onto stack
 	// should look like:
 	//     getstatic CLASS/name I
-	void loadGlobalInt(int val){
-		//gen("getstatic", CLASS+"/"+,"I");
+	void loadGlobalInt(String name){
+		gen("getstatic", CLASS+"/"+name,"I");
 	}
 
 	//generate a load of an int local variable onto stack
@@ -123,7 +123,7 @@ public class CodeGenerating extends Visitor {
 		// 		putstatic CLASS/name
 		gen("putstatic", CLASS+"/"+name);
 	}
-	
+
 	void storeLocalInt(int index){
 		// Generate a store to an int local variable from the stack:
 		//		istore index
@@ -135,17 +135,17 @@ public class CodeGenerating extends Visitor {
 	void computeAdr(nameNode n){
 		if (n.subscriptVal.isNull()){ //simple unsubscribed identifier
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
-				 n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
-				if(n.varName.idinfo.adr == AdrModes.global){ 
-					n.adr = AdrModes.global;
+					n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
+				if(n.varName.idinfo.adr == AdrMode.global){ 
+					n.adr = AdrMode.global;
 					n.label = n.varName.idinfo.label;
 				} else { // local
-					n.adr = AdrModes.local;
+					n.adr = AdrMode.local;
 					n.varIndex = n.varName.idinfo.varIndex;
 				}
 			} else { //array
 				//push ref to target to check length
-				if(n.varName.idinfo.adr == AdrModes.global){
+				if(n.varName.idinfo.adr == AdrMode.global){
 					n.label = n.varName.idinfo.label;
 					loadGlobalReference(n.label, arrayTypeCode(n.varName.idinfo.type));
 				} else { //local
@@ -155,7 +155,7 @@ public class CodeGenerating extends Visitor {
 			}
 		} else { //subscripted
 			//push ref first
-			if(n.varName.idinfo.adr == AdrModes.global){
+			if(n.varName.idinfo.adr == AdrMode.global){
 				n.label = n.varName.idinfo.label;
 				loadGlobalReference(n.label, arrayTypeCode(n.varName.idinfo.type));
 			} else { //local
@@ -171,26 +171,52 @@ public class CodeGenerating extends Visitor {
 		// all operands are on the stack
 		gen(op);
 	}
-	
+
 	void storeId(identNode id){
-		//TODO fix
 		if(id.idinfo.kind == ASTNode.Kinds.Var || 
 				id.idinfo.kind == ASTNode.Kinds.Value) {
 			// id is a scalar variable
 			if(id.idinfo.adr == AdrMode.global) // ident is global
 				storeGlobalInt(id.idinfo.label);
-			else if (id.idinfo.adr == AdrMode.local)
+			else//(id.idinfo.adr == AdrMode.local)
 				storeLocalInt(id.idinfo.varIndex);
 		} else {
-			//Handle arrays
+			// TODO This is based on the expanded version of the storeName method, it may need further changes
+			//array
+			//push ref to target to check length
+			switch (id.type){
+			case Integer:
+				gen("invokestatic","CSXLib/checkIntArrayLength([I[I)[I");
+				break;
+			case Boolean:
+				gen("invokestatic","CSXLib/checkBoolArrayLength([Z[Z)[Z");
+				break;
+			case Character:
+				gen("invokestatic","CSXLib/checkCharArrayLength([C[C)[C");
+				break;
+			default:
+				gen("ERROR: Invalid Type"); //TODO remove before end
+				break;
+			}
+			
+			//store source array into target var
+			if(id.idinfo.adr == AdrMode.global){
+				//n.label = n.varName.idinfo.label;
+				id.label = id.idinfo.label; // TODO not sure if correct
+				storeGlobalReference(id.label, arrayTypeCode(id.idinfo.type));
+			} else { //local
+				id.varIndex = id.idinfo.varIndex; //Not sure if correct TODO
+				storeLocalReference(id.varIndex);
+			}
+
 		}
 	}
 
 	void storeName(nameNode n){
-		if (n.subscriptVal.isNull()){ //simple unsubscribed identifier
+		if (n.subscriptVal.isNull()){ //simple unsubscripted identifier
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
-				 n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
-				if(n.varName.idinfo.adr == AdrModes.global){ 
+					n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
+				if(n.varName.idinfo.adr == AdrMode.global){ 
 					storeGlobalInt(n.label);
 				} else { // local
 					storeLocalInt(n.varIndex);
@@ -198,18 +224,21 @@ public class CodeGenerating extends Visitor {
 			} else { //array
 				//push ref to target to check length
 				switch (n.type){
-					case ASTNode.Types.Integer:
-						gen("invokestatic","CSXLib/checkIntArrayLength([I[I)[I");
-						break;
-					case ASTNode.Types.Boolean:
-						gen("invokestatic","CSXLib/checkBoolArrayLength([Z[Z)[Z");
-						break;
-					case ASTNode.Types.Character:
-						gen("invokestatic","CSXLib/checkCharArrayLength([C[C)[C");
-						break;
+				case Integer:
+					gen("invokestatic","CSXLib/checkIntArrayLength([I[I)[I");
+					break;
+				case Boolean:
+					gen("invokestatic","CSXLib/checkBoolArrayLength([Z[Z)[Z");
+					break;
+				case Character:
+					gen("invokestatic","CSXLib/checkCharArrayLength([C[C)[C");
+					break;
+				default:
+					gen("ERROR: Invalid Type"); //TODO remove before end
+					break;
 				}
 				//store source array into target var
-				if(n.varName.idinfo.adr == AdrModes.global){
+				if(n.varName.idinfo.adr == AdrMode.global){
 					n.label = n.varName.idinfo.label;
 					storeGlobalReference(n.label, arrayTypeCode(n.varName.idinfo.type));
 				} else { //local
@@ -221,19 +250,22 @@ public class CodeGenerating extends Visitor {
 			//ref to target array, subscripted expr, and source expr
 			//are already pushed; now store source val into array
 			switch(n.type){
-				case ASTNode.Types.Integer: //iaload
-					gen("iaload");
-					break;
-				case ASTNode.Types.Boolean: //baload
-					gen("baload");
-					break;
-				case ASTNode.Types.Character: //caload
-					gen("caload");
-					break;
+			case Integer: //iaload
+				gen("iaload");
+				break;
+			case Boolean: //baload
+				gen("baload");
+				break;
+			case Character: //caload
+				gen("caload");
+				break;
+			default:
+				gen("ERROR: Invalid type"); //TODO remove before end
+				break;
 			}
 		}
 	}//end storeName()
-	
+
 	static Boolean isRelationalOp(int op) {
 		switch (op) {
 		case sym.EQ:
@@ -247,15 +279,13 @@ public class CodeGenerating extends Visitor {
 			return false;
 		}
 	}
-	
+
 	void branchRelationalCompare(int tokenCode, String label){
-		//TODO check for correctness
 		// Generate a conditional branch to label based on tokenCode:
 		gen("if_icmp"+relationCode(tokenCode), label);
 	}
-	
+
 	void genRelationalOp(int operatorCode){
-		//TODO check for correctness
 		// Generate a code to evaluate a relational operator
 		String trueLab = genLab();
 		String skip = genLab();
@@ -266,14 +296,14 @@ public class CodeGenerating extends Visitor {
 		loadI(1); // Push true
 		defineLab(skip);
 	}
-	
+
 	boolean isNumericLit(exprNodeOption e){
 		return 	(e instanceof intLitNode) ||
 				(e instanceof charLitNode) ||
 				(e instanceof trueNode) ||
 				(e instanceof falseNode);
 	}
-	
+
 	int getLitValue(exprNode e){
 		if(e instanceof intLitNode)
 			return ((intLitNode) e).intval;
@@ -286,9 +316,8 @@ public class CodeGenerating extends Visitor {
 		System.out.println("ERROR: Invalid Type"); // TODO Shouldn't occur, remove before submitting
 		return 0;
 	}
-	
+
 	void declGlobalInt(String name, exprNodeOption initValue){
-		// TODO check for correctness
 		if(isNumericLit(initValue)){
 			// Generate a field declaration with initial value:
 			int numValue = getLitValue((exprNode)initValue);
@@ -298,17 +327,15 @@ public class CodeGenerating extends Visitor {
 			gen(".field public static"+name+"I");
 		}
 	}
-	
+
 	void declGlobalArray(String name, typeNode type){
-		//TODO check for correctness
 		String arrayType = arrayTypeCode(type);
-		
+
 		// Generate a field declaration for an array:
 		gen(".field public static "+name+" "+arrayType+"]"); // ]?
 	}
-	
+
 	void allocateArray(typeNode type){
-		//TODO check for correctness
 		if(type instanceof intTypeNode){
 			// Generate a newarray instruction for an integer array:
 			gen("newarray","int");
@@ -322,9 +349,8 @@ public class CodeGenerating extends Visitor {
 			System.out.println("ERROR: Invalid type"); // TODO remove before end
 		}
 	}
-	
+
 	String arrayTypeCode(typeNode type){
-		//TODO check for correctness
 		// Return array type code
 		if(type instanceof intTypeNode)
 			return "[I";
@@ -334,9 +360,28 @@ public class CodeGenerating extends Visitor {
 			return "[Z";
 		return "ERROR: Invalid type";	//TODO remove before end
 	}
-	
+
+	String arrayTypeCode(ASTNode.Types type){
+		// Return array type code
+		switch(type){
+		case Integer: return "[I";
+		case Character: return "[C";
+		case Boolean: return "[Z";
+		default: return "ERROR: Invalid type"; //TODO remove before end
+		}
+	}
+
+	void loadGlobalReference(String name, String typeCode){
+		// Generate a load of a reference to the stack from a static field:
+		gen("getstatic",CLASS+"/"+name,typeCode);
+	}
+
+	void loadLocalReference(int index){
+		// Generate a load of a reference to the stack from a local variable
+		gen("aload", index);
+	}
+
 	String typeCode(typeNode type){
-		// TODO test for correctness
 		// Return type code
 		if(type instanceof intTypeNode)
 			return "I";
@@ -348,9 +393,8 @@ public class CodeGenerating extends Visitor {
 			return "V";
 		else return "ERROR: Invalid type"; //TODO remove before end
 	}
-	
+
 	String typeCode(ASTNode.Types type){
-		// TODO test for correctness
 		// Return type code
 		switch (type) {
 		case Integer: 
@@ -364,86 +408,76 @@ public class CodeGenerating extends Visitor {
 		default: return "ERROR: Invalid type"; //TODO remove before end
 		}
 	}
-	
+
 	String buildTypeCode(argDeclNode n){
-		// TODO check for correctness
 		if(n instanceof valArgDeclNode)
 			return typeCode(((valArgDeclNode) n).argType);
 		else 
 			return arrayTypeCode(((arrayArgDeclNode) n).elementType);
 	}
-	
+
 	String buildTypeCode(argDeclsNode n){
-		// TODO check for correctness
 		if(n.moreDecls.isNull())
 			return buildTypeCode(n.thisDecl);
 		else
 			return buildTypeCode(n.thisDecl) 
 					+ buildTypeCode((argDeclsNode)n.moreDecls);
 	}
-	
+
 	String buildTypeCode(exprNode n){
-		// TODO test for correctness
-		if(isArray(n.kind))
+		if(n.kind == ASTNode.Kinds.Array || n.kind == ASTNode.Kinds.ArrayParm) //TODO is this correct?
 			return arrayTypeCode(n.type);
 		else return typeCode(n.type);
 	}
-	
+
 	String buildTypeCode(argsNode n){
-		// TODO test for correctness
 		if(n.moreArgs.isNull())
 			return buildTypeCode(n.argVal);
 		else return buildTypeCode(n.argVal)+buildTypeCode((argsNode)n.moreArgs);
 	}
-	
+
 	String buildTypeCode(String methodName, argsNodeOption args, 
-														String returnCode){
+			String returnCode){
 		String newTypeCode = methodName;
 		if(args.isNull())
 			newTypeCode = newTypeCode + "()";
 		else newTypeCode = newTypeCode+"(" +buildTypeCode((argsNode)args)+")";
 		return newTypeCode + returnCode;
 	}
-	
+
 	void storeGlobalReference(String name, String typeCode){
-		//TODO check for correctness
 		// Generate a store of a reference from the stack into a static field:
 		gen("putstatic", CLASS+"/"+name, typeCode);
 	}
-	
+
 	void storeLocalReference(int index){
-		//TODO check for correctness
 		// Generate a store of a reference from the stack into a local variable
 		gen("astore", index);
 	}
 
 	// TODO Void type? no type given in spec, no return so going with void
 	void declField(varDeclNode n){
-		//TODO check for correctness
 		String varLabel = n.varName.idname +"$"; //Append $ to avoid conflicts
 		declGlobalInt(varLabel, n.initValue);
 		n.varName.idinfo.label = varLabel;
 		n.varName.idinfo.adr = AdrMode.global;
 	}
-	
+
 	void declField(constDeclNode n){
-		//TODO check for correctness
 		String constLabel = n.constName.idname +"$";
 		declGlobalInt(constLabel, n.constValue);
 		n.constName.idinfo.label = constLabel;
 		n.constName.idinfo.adr = AdrMode.global;
 	}
-	
+
 	void declField(arrayDeclNode n){
-		//TODO check for correctness
 		String arrayLabel = n.arrayName.idname + "$";
 		declGlobalArray(arrayLabel, n.elementType);
 		n.arrayName.idinfo.label = arrayLabel;
 		n.arrayName.idinfo.adr = AdrMode.global;
 	}
-	
+
 	static String relationCode(int op) {
-		//TODO check for correctness
 		switch (op) {
 		case sym.EQ:
 			return "eq";	// ==
@@ -461,9 +495,8 @@ public class CodeGenerating extends Visitor {
 			return "";
 		}
 	}
-	
+
 	static String selectOpCode(int op) {
-		//TODO Double check this is correct
 		switch (op) {
 		case sym.PLUS:
 			return("iadd");
@@ -516,7 +549,6 @@ public class CodeGenerating extends Visitor {
 	}
 
 	void visit(fieldDeclsNode n){
-		//TODO
 		// Translate thisField,
 		// Then moreFields
 		this.visit(n.thisField);
@@ -526,7 +558,6 @@ public class CodeGenerating extends Visitor {
 	void visit(nullFieldDeclsNode n){}
 
 	void visit(stmtsNode n){
-		//System.out.println ("In stmtsNode\n");
 		// Translate thisStmt
 		this.visit(n.thisStmt);
 		// Then moreStmts.
@@ -537,7 +568,6 @@ public class CodeGenerating extends Visitor {
 	void visit(nullStmtsNode n){}
 
 	void visit(varDeclNode n){
-		//TODO finish full implementation, check for correctness
 		if(currentMethod == null){ //A global field declaration
 			if(n.varName.idinfo.adr == AdrMode.none){
 				// First pass has no address; Generate field declarations
@@ -552,7 +582,6 @@ public class CodeGenerating extends Visitor {
 					}
 				}
 			}
-			
 		} else {
 			//Handle local variable declarations
 			// Give this variable and index equal to numberOfLocals, and 
@@ -560,10 +589,10 @@ public class CodeGenerating extends Visitor {
 			n.varName.idinfo.varIndex = 
 					currentMethod.name.idinfo.numberOfLocals;
 			n.varName.idinfo.adr = AdrMode.local;
-			
+
 			// Increment numberOfLocals used in this method
 			currentMethod.name.idinfo.numberOfLocals++;
-			
+
 			// If initValue is non-null, translate it and generate code to
 			// store initValue into varName.
 			if(!n.initValue.isNull()){
@@ -590,7 +619,7 @@ public class CodeGenerating extends Visitor {
 	void visit(voidTypeNode n) {
 		// No code generation needed
 	}
-	
+
 	// 1) if source is an array, generate code to clone it and save a
 	//    reference to clone in target
 	// 2) if source is a string lit, generate code to convery it to a
@@ -601,22 +630,25 @@ public class CodeGenerating extends Visitor {
 	// 5) generate code to store source's val in target
 	void visit(asgNode n) {
 		computeAdr(n.target);
-    this.visit(n.source); //step 4
+		this.visit(n.source); //step 4
 
 		//check if source should be cloned or converted,
 		if (n.source.kind == ASTNode.Kinds.Array ||
 				n.source.kind == ASTNode.Kinds.ArrayParm){ //step 1
-			switch (n.type){
-				case ASTNode.Types.Integer:
-					gen("invokestatic"," CSXLib/cloneIntArrayLength([I)[I");
-					break;
-				case ASTNode.Types.Boolean:
-					gen("invokestatic"," CSXLib/cloneBoolArrayLength([Z)[Z");
-					break;
-				case ASTNode.Types.Character:
-					gen("invokestatic"," CSXLib/cloneCharArrayLength([C)[C");
-					break;
-				}
+			switch (n.source.type){ //TODO is this correct? (originally switch(n.type))
+			case Integer:
+				gen("invokestatic"," CSXLib/cloneIntArrayLength([I)[I");
+				break;
+			case Boolean:
+				gen("invokestatic"," CSXLib/cloneBoolArrayLength([Z)[Z");
+				break;
+			case Character:
+				gen("invokestatic"," CSXLib/cloneCharArrayLength([C)[C");
+				break;
+			default:
+				System.out.println("ERROR: Invalid type"); //TODO remove before end
+				break;
+			}
 		}else if (n.source.kind == ASTNode.Kinds.String){ //step 2
 			gen("invokestatic"," CSXLib/convertString(LJava/lang/String;)[C");
 		}
@@ -624,7 +656,7 @@ public class CodeGenerating extends Visitor {
 		//val to store now on stack; store to LHS
 		storeName(n.target); //step 5
 	}
-	
+
 	// 1) translate condition (onto stack)
 	// 2) generate code to conditionally branch around thenPart
 	// 3) translate thenPart
@@ -649,7 +681,7 @@ public class CodeGenerating extends Visitor {
 		branch(endLab); //step 4
 		defineLab(elseLab);
 		this.visit(n.elsePart); //step 5
-		defineLab(endPart);
+		defineLab(endLab);
 	}
 
 	// 1) translate outputValue; 
@@ -659,25 +691,25 @@ public class CodeGenerating extends Visitor {
 	// 3) translate morePrints
 	// NOTE: can only print int, bool, chars, char arrays, and strings
 	void visit(printNode n) {
-  	this.visit(n.outputValue); //step 1
+		this.visit(n.outputValue); //step 1
 		if (n.outputValue.kind == ASTNode.Kinds.Array ||
 				n.outputValue.kind == ASTNode.Kinds.ArrayParm){ //step 2
-				gen("invokestatic"," CSXLib/printCharArray([C)V");
+			gen("invokestatic"," CSXLib/printCharArray([C)V");
 		}else if (n.outputValue.kind == ASTNode.Kinds.String){
-    	gen("invokestatic"," CSXLib/printString(LJava/lang/String;)V");
+			gen("invokestatic"," CSXLib/printString(LJava/lang/String;)V");
 		}else{ 
 			switch (n.outputValue.type){
-				case Integer:
-					gen("invokestatic"," CSXLib/printInteger(I)V");
-					break;
-				case Boolean:
-					gen("invokestatic"," CSXLib/printBool(Z)V");
-					break;
-				case Character:
-					gen("invokestatic"," CSXLib/printChar(C)V");
-					break;
+			case Integer:
+				gen("invokestatic"," CSXLib/printInteger(I)V");
+				break;
+			case Boolean:
+				gen("invokestatic"," CSXLib/printBool(Z)V");
+				break;
+			case Character:
+				gen("invokestatic"," CSXLib/printChar(C)V");
+				break;
 			default:
-				gen("ERROR: Invalid Type"); // Shouldn't happen TODO
+				gen("ERROR: Invalid Type"); // Shouldn't happen TODO remove before end
 				break;
 			}
 		}
@@ -691,15 +723,14 @@ public class CodeGenerating extends Visitor {
 		this.visit(n.stmts);
 	}
 
-	void visit(binaryOpNode n) {
-		// TODO finish full implementation, check for correctness
-		
+	void visit(binaryOpNode n) {		
 		// First translate the left and right operands
 		this.visit(n.leftOperand);
 		this.visit(n.rightOperand);
-		
+
 		// Now the values of the operands are on the stack
 		// Generate JVM instruction corresponding to operatorCode.
+
 		// Is this a relational operator?
 		if (relationCode(n.operatorCode) == ""){ // Not relational
 			gen(selectOpCode(n.operatorCode));
@@ -716,29 +747,29 @@ public class CodeGenerating extends Visitor {
 		//   context of identNode is known
 		// Hence no code generation actions are defined here 
 		// (though you may want/need to define some in full CSX)
-
+		// TODO Is there anything needed here?
 	}
 
 	void visit(intLitNode n) {
 		loadI(n.intval);
 		n.adr = AdrMode.literal;
 	}
-	
+
 	// 1) if subscriptVal is null (ie, is not an array): generate code to
 	//    push val at varName's field name or local vaiable index
 	// 2) Otherwise:
-  //    a) generate code to push the array REFERENCE stored at
+	//    a) generate code to push the array REFERENCE stored at
 	//       varName's field name or local var index
 	//    b) translate subscriptVal
 	//    c) generate an iaload or baload or caload based on varName's
 	//       element type
 	void visit(nameNode n) {
-		n.adr = AdrModes.stack;
+		n.adr = AdrMode.stack;
 		if(n.subscriptVal.isNull()){ //if non-subscripted
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var || //if scalar var or const
-				 n.varName.idinfo.kind == ASTNode.Kinds.Value ||
-				 n.varName.idinfo.kind == ASTNode.Kinds.Value ){ 
-				if(n.varName.idinfo.adr == AdrModes.global){ //if global, has label
+					n.varName.idinfo.kind == ASTNode.Kinds.Value ||
+					n.varName.idinfo.kind == ASTNode.Kinds.Value ){ 
+				if(n.varName.idinfo.adr == AdrMode.global){ //if global, has label
 					String label = n.varName.idinfo.label;
 					loadGlobalInt(label);
 				}else{ //else local has index
@@ -746,9 +777,9 @@ public class CodeGenerating extends Visitor {
 					loadLocalInt(n.varIndex);
 				}
 			}else{ //array or array param
-				if(n.varName.idinfo.adr == AdrModes.global){ //global
+				if(n.varName.idinfo.adr == AdrMode.global){ //global
 					String label = n.varName.idinfo.label;
-					loadGlobalReference(label);
+					loadGlobalReference(label,arrayTypeCode(n.varName.idinfo.type));
 				}else{ //else local
 					n.varIndex = n.varName.idinfo.varIndex;
 					loadLocalReference(n.varIndex);
@@ -756,26 +787,29 @@ public class CodeGenerating extends Visitor {
 			}
 		}else{ //is subscripted
 			//push reference first
-			if(n.varName.idinfo.adr == AdrModes.global){ //global
-					String label = n.varName.idinfo.label;
-					loadGlobalReference(label);
-				}else{ //else local
-					n.varIndex = n.varName.idinfo.varIndex;
-					loadLocalReference(n.varIndex);
-				}
+			if(n.varName.idinfo.adr == AdrMode.global){ //global
+				String label = n.varName.idinfo.label;
+				loadGlobalReference(label,arrayTypeCode(n.varName.idinfo.type));
+			}else{ //else local
+				n.varIndex = n.varName.idinfo.varIndex;
+				loadLocalReference(n.varIndex);
+			}
 			//then compute subscript val
 			this.visit(n.subscriptVal);
 			//then load array element onto stack
-			switch(n.type){
-				case ASTNode.Types.Integer: //iaload
-					gen("iaload");
-					break;
-				case ASTNode.Types.Boolean: //baload
-					gen("baload");
-					break;
-				case ASTNode.Types.Character: //caload
-					gen("caload");
-					break;
+			switch(n.type){  //
+			case Integer: //iaload
+				gen("iaload");
+				break;
+			case Boolean: //baload
+				gen("baload");
+				break;
+			case Character: //caload
+				gen("caload");
+				break;
+			default:
+				System.out.println("ERROR: Invalid type"); //TODO remove before end
+				break;
 			}
 		}
 
@@ -783,31 +817,30 @@ public class CodeGenerating extends Visitor {
 
 
 	void visit(classNode n) {
-		// TODO check for correctness
 		currentMethod = null; // We're not in a method body yet
-		
-		 // A shared field CLASS is set to the name of the CSX class.
+
+		// A shared field CLASS is set to the name of the CSX class.
 		CLASS = n.className.idname;
-		
+
 		// Generate beginning of class
 		genComment("CSX program translated into Java bytecodes (Jasmin format)");
 		gen(".class","public", CLASS);
 		gen(".super","java/lang/Object");
-		
+
 		// Generate field declarations for the class, get addresses
 		this.visit(n.members.fields);
-		
+
 		// Generate body of main(String[]);
 		gen(".method"," public static","main([Ljava/lang/String;)V");
 
 		// Generate non-trivial field declarations, get initial values
 		this.visit(n.members.fields);
-		
-		
+
+
 		// Generate end of class
 		gen("invokestatic", CLASS+"/main()V");		
 		gen("return");
-		gen(".limit","stack",2);
+		gen(".limit","stack",25);
 		gen(".end","method");
 
 		// Translate methods
@@ -823,21 +856,18 @@ public class CodeGenerating extends Visitor {
 	}
 
 	void visit(valArgDeclNode n) {
-		// TODO check for correctness
 		// Label method argument with its address information
 		n.argName.idinfo.adr = AdrMode.local;
 		n.argName.idinfo.varIndex = currentMethod.name.idinfo.numberOfLocals++;
 	}
 
 	void visit(arrayArgDeclNode n) {
-		// TODO check for correctness
 		// Label method argument with its address information
 		n.argName.idinfo.adr = AdrMode.local;
 		n.argName.idinfo.varIndex = currentMethod.name.idinfo.numberOfLocals++;
 	}
 
 	void visit(argDeclsNode n) {
-		// TODO check for correctness
 		// Label each method argument with its address information
 		this.visit(n.thisDecl);
 		this.visit(n.moreDecls);
@@ -848,7 +878,6 @@ public class CodeGenerating extends Visitor {
 
 
 	void visit(methodDeclsNode n) {
-		// TODO check for correctness
 		// Translate thisMethod,
 		this.visit(n.thisDecl);
 		// then moreMethods.
@@ -859,26 +888,25 @@ public class CodeGenerating extends Visitor {
 	void visit(nullMethodDeclsNode n) {}
 
 	void visit(methodDeclNode n) {
-		// TODO check for correctness
 		currentMethod = n; // Now inside of a method
 		n.name.idinfo.numberOfLocals = 0;
 		String newTypeCode = n.name.idname;
 		if(n.args.isNull()) //If there are no arguments
 			newTypeCode = newTypeCode + "()";
 		else newTypeCode = newTypeCode +"("
-			+ buildTypeCode((argDeclsNode) n.args) + ")";
+				+ buildTypeCode((argDeclsNode) n.args) + ")";
 		newTypeCode = newTypeCode + typeCode(n.returnType);
 		n.name.idinfo.methodReturnCode = typeCode(n.returnType);
-		
+
 		gen(".method", " public static", newTypeCode);
-		
+
 		// Assign local variable indices to args
 		this.visit(n.args);
-		
+
 		// Generate code for local decls and method body
 		this.visit(n.decls);
 		this.visit(n.stmts);
-		
+
 		//Generate default return at end of method body
 		if(n.returnType instanceof voidTypeNode)
 			gen("return");
@@ -886,7 +914,7 @@ public class CodeGenerating extends Visitor {
 			loadI(0);
 			gen("ireturn");
 		}
-		
+
 		// Generate end of method data, with stack depth at 25
 		gen(".limit", "stack", 25);
 		gen(".limit", "locals", n.name.idinfo.numberOfLocals);
@@ -896,17 +924,16 @@ public class CodeGenerating extends Visitor {
 	void visit(trueNode n) {
 		loadI(1);
 		n.adr = AdrMode.literal;
-		//n.intval = 1;
+		n.intval = 1;
 	}
 
 	void visit(falseNode n) {
 		loadI(0);
 		n.adr = AdrMode.literal;
-		//n.intval = 0;
+		n.intval = 0;
 	}
 
 	void visit(constDeclNode n) {
-		// TODO check for correctness
 		if(currentMethod == null){ // A global const declaration
 			if(n.constName.idinfo.adr == AdrMode.none){
 				// First pass has no address assigned. Generate field decl
@@ -926,10 +953,10 @@ public class CodeGenerating extends Visitor {
 			n.constName.idinfo.varIndex = 
 					currentMethod.name.idinfo.numberOfLocals;
 			n.constName.idinfo.adr = AdrMode.local;
-			
+
 			// Increment numberOfLocals used in this method
 			currentMethod.name.idinfo.numberOfLocals++;
-			
+
 			// Compute and store const value
 			this.visit(n.constValue);
 			storeId(n.constName);
@@ -937,7 +964,6 @@ public class CodeGenerating extends Visitor {
 	}
 
 	void visit(arrayDeclNode n) {
-		// TODO check for correctness, clean up
 		if(currentMethod == null){ // A global array declaration
 			if(n.arrayName.idinfo.adr == AdrMode.none) {
 				//First pass, no address. Generate field declarations
@@ -951,12 +977,12 @@ public class CodeGenerating extends Visitor {
 			n.arrayName.idinfo.varIndex = 
 					currentMethod.name.idinfo.numberOfLocals;
 			n.arrayName.idinfo.adr = AdrMode.local;
-			
+
 			// Increment numberOfLocals used in this method
 			currentMethod.name.idinfo.numberOfLocals++;
 		}
-		
-		
+
+
 		// Create array & store a reference to it
 		loadI(n.arraySize.intval); //Push number of array elements
 		allocateArray(n.elementType);
@@ -964,7 +990,7 @@ public class CodeGenerating extends Visitor {
 			storeGlobalReference(n.arrayName.idinfo.label, 
 					arrayTypeCode(n.elementType));
 		else storeLocalReference(n.arrayName.idinfo.varIndex);
-		
+
 		// Allocate a field or local variable index for arrayName;
 		// Generate code to allocate an array of type elementType
 		// whose size is arraySize; generate code to store a reference to
@@ -999,9 +1025,7 @@ public class CodeGenerating extends Visitor {
 		gen("ldc", n.strval);
 	}
 
-	//translate argValue, then moreArgs
 	void visit(argsNode n) {
-		// TODO test for correctness
 		//Evaluate arguments and load them onto stack
 		this.visit(n.argVal);
 		this.visit(n.moreArgs);
@@ -1039,7 +1063,7 @@ public class CodeGenerating extends Visitor {
 	//    L2:
 	void visit(whileNode n) {
 		String top = genLab(); //step 1
-		String bottom = getLab();
+		String bottom = genLab();
 		if (! n.label.isNull()){ //step 2
 			((identNode)n.label).idinfo.topLabel = top;
 			((identNode)n.label).idinfo.bottomLabel = bottom;
@@ -1055,28 +1079,29 @@ public class CodeGenerating extends Visitor {
 	// 1) translate procArgs
 	// 2) generate a static call to procName
 	void visit(callNode n) {
-		// TODO check for correctness
 		// Evaluate args and push them onto the stack
 		this.visit(n.args);
-		// Generate call to method, using its type code
+
+		// Build method's type code, for calling the method
 		String typeCode = buildTypeCode(n.methodName.idname, n.args,
-							n.methodName.idinfo.methodReturnCode);
-		//genCall(CLASS+"/"+typeCode);
-		gen(CLASS+"/"+typeCode); //TODO not sure if this is correct
+				n.methodName.idinfo.methodReturnCode);
+
+		// Generate a static method call:
+		gen("invokestatic", CLASS+"/"+typeCode);
 	}
+
 
 	// 1) translate functionArgs
 	// 2) generate a static call to procName
 	void visit(fctCallNode n) {
-		// TODO check for correctness
 		// Evaluate args and push them onto the stack
 		this.visit(n.methodArgs);
-		// Generate call to method, using its type code
+		// Build method's type code, for calling the method
 		String typeCode = buildTypeCode(n.methodName.idname, n.methodArgs,
-							n.methodName.idinfo.methodReturnCode);
-		//genCall(CLASS+"/"+typeCode);
-		gen(CLASS+"/"+typeCode);
+				n.methodName.idinfo.methodReturnCode);
 
+		//Generate a static method call:
+		gen("invokestatic", CLASS+"/"+typeCode);
 	}
 
 	// 1) if returnVal is non-Null, then translate it and generate an ireturn
@@ -1110,17 +1135,17 @@ public class CodeGenerating extends Visitor {
 		this.visit(n.operand);
 		if((n.operand.type == ASTNode.Types.Integer || //step 1
 				n.operand.type == ASTNode.Types.Integer)&&
-        n.resultType instanceof boolTypeNode){
+				n.resultType instanceof boolTypeNode){
 			loadI(0);
-			genRelationalOP(sym.NOTEQ);
+			genRelationalOp(sym.NOTEQ);
 		} else if (n.operand.type == ASTNode.Types.Integer && //step 2
-               n.resultType instanceof charTypeNode){
+				n.resultType instanceof charTypeNode){
 			loadI(127); //ie, 1111111 in binary
 			gen("iand");
 		}
 
 	}
-	
+
 	// 1) if target.subscriptVal is null:
 	//    a) generate code to push target.varname's value onto stack
 	//    b) push integer 1 onto stack
@@ -1146,15 +1171,18 @@ public class CodeGenerating extends Visitor {
 			//this.visit(n.target); //step 2.b ??
 			gen("dup2"); //one for load, one for store, step 2.c
 			switch(n.target.type){ //load array element onto stack, step 2.d
-				case ASTNode.Types.Integer:
-					gen("iaload");
-					break;
-				case ASTNode.Types.Boolean:
-					gen("baload");
-					break;
-				case ASTNode.Types.Character:
-					gen("caload");
-					break;
+			case Integer:
+				gen("iaload");
+				break;
+			case Boolean:
+				gen("baload");
+				break;
+			case Character:
+				gen("caload");
+				break;
+			default:
+				gen("ERROR: Invalid type"); //TODO remove before end
+				break;
 			}
 			loadI(1); //step 2.e
 			gen("iadd"); //step 2.f
@@ -1164,7 +1192,7 @@ public class CodeGenerating extends Visitor {
 
 	//same as incrementNode except with isub
 	void visit(decrementNode n){
-if(n.target.subscriptVal.isNull()){ //un-subscripted, step 1
+		if(n.target.subscriptVal.isNull()){ //un-subscripted, step 1
 			this.visit(n.target); //step 1.a
 			loadI(1); //step 1.b
 			gen("isub"); //step 1.c
@@ -1175,15 +1203,18 @@ if(n.target.subscriptVal.isNull()){ //un-subscripted, step 1
 			//this.visit(n.target); //step 2.b ??
 			gen("dup2"); //one for load, one for store, step 2.c
 			switch(n.target.type){ //load array element onto stack, step 2.d
-				case ASTNode.Types.Integer:
-					gen("iaload");
-					break;
-				case ASTNode.Types.Boolean:
-					gen("baload");
-					break;
-				case ASTNode.Types.Character:
-					gen("caload");
-					break;
+			case Integer:
+				gen("iaload");
+				break;
+			case Boolean:
+				gen("baload");
+				break;
+			case Character:
+				gen("caload");
+				break;
+			default:
+				gen("ERROR: Invalid type"); //TODO remove before end
+				break;
 			}
 			loadI(1); //step 2.e
 			gen("isub"); //step 2.f

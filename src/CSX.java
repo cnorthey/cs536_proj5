@@ -51,13 +51,13 @@ public class CSX {
     TypeChecking typeCheck = new TypeChecking();
     
  // Update to handle ASTs rooted by classNodes
-    ok = typeCheck.isTypeCorrect((csxLiteNode) root.value);
+    ok = typeCheck.isTypeCorrect((classNode) root.value);
     
     if (ok) {
     	// In CSX lite there is no user defined class name so we simply use "test"
     	// In full CSX you can get the actual class name via:
     	//   ((classNode) root.value).className.idname
-        String className = "test"  ; 
+        String className = ((classNode)root.value).className.idname; 
     	String asmName = className+".j"; // name of asmFile
 
         
@@ -72,7 +72,7 @@ public class CSX {
     	asmFile = new PrintStream(new FileOutputStream(asmName));
     	CodeGenerating codeGen =new CodeGenerating(asmFile);
     	
-        ok = codeGen.startCodeGen((csxLiteNode) root.value);
+        ok = codeGen.startCodeGen((classNode) root.value);
 
     	if (ok) {
     		asmFile.close();
