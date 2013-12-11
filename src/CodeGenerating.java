@@ -186,13 +186,13 @@ public class CodeGenerating extends Visitor {
 			//push ref to target to check length
 			switch (id.type){
 			case Integer:
-				gen("invokestatic","CSXLib/checkIntArrayLength([I[I)[I");
+				gen("invokestatic"," CSXLib/checkIntArrayLength([I[I)[I");
 				break;
 			case Boolean:
-				gen("invokestatic","CSXLib/checkBoolArrayLength([Z[Z)[Z");
+				gen("invokestatic"," CSXLib/checkBoolArrayLength([Z[Z)[Z");
 				break;
 			case Character:
-				gen("invokestatic","CSXLib/checkCharArrayLength([C[C)[C");
+				gen("invokestatic"," CSXLib/checkCharArrayLength([C[C)[C");
 				break;
 			default:
 				gen("ERROR: Invalid Type"); //TODO remove before end
@@ -225,13 +225,13 @@ public class CodeGenerating extends Visitor {
 				//push ref to target to check length
 				switch (n.type){
 				case Integer:
-					gen("invokestatic","CSXLib/checkIntArrayLength([I[I)[I");
+					gen("invokestatic"," CSXLib/checkIntArrayLength([I[I)[I");
 					break;
 				case Boolean:
-					gen("invokestatic","CSXLib/checkBoolArrayLength([Z[Z)[Z");
+					gen("invokestatic"," CSXLib/checkBoolArrayLength([Z[Z)[Z");
 					break;
 				case Character:
-					gen("invokestatic","CSXLib/checkCharArrayLength([C[C)[C");
+					gen("invokestatic"," CSXLib/checkCharArrayLength([C[C)[C");
 					break;
 				default:
 					gen("ERROR: Invalid Type"); //TODO remove before end
@@ -650,7 +650,7 @@ public class CodeGenerating extends Visitor {
 				break;
 			}
 		}else if (n.source.kind == ASTNode.Kinds.String){ //step 2
-			gen("invokestatic"," CSXLib/convertString(LJava/lang/String;)[C");
+			gen("invokestatic"," CSXLib/convertString(Ljava/lang/String;)[C");
 		}
 
 		//val to store now on stack; store to LHS
@@ -691,12 +691,20 @@ public class CodeGenerating extends Visitor {
 	// 3) translate morePrints
 	// NOTE: can only print int, bool, chars, char arrays, and strings
 	void visit(printNode n) {
+		//ignore work around from prev projs
+		if(n.outputValue instanceof strLitNode){
+			strLitNode temp = (strLitNode)n.outputValue;
+			if(temp.strval.compareTo("first") == 0){
+				this.visit(n.morePrints);
+				return;
+			}
+		}
 		this.visit(n.outputValue); //step 1
 		if (n.outputValue.kind == ASTNode.Kinds.Array ||
 				n.outputValue.kind == ASTNode.Kinds.ArrayParm){ //step 2
 			gen("invokestatic"," CSXLib/printCharArray([C)V");
 		}else if (n.outputValue.kind == ASTNode.Kinds.String){
-			gen("invokestatic"," CSXLib/printString(LJava/lang/String;)V");
+			gen("invokestatic"," CSXLib/printString(Ljava/lang/String;)V");
 		}else{ 
 			switch (n.outputValue.type){
 			case Integer:
@@ -838,7 +846,7 @@ public class CodeGenerating extends Visitor {
 
 
 		// Generate end of class
-		gen("invokestatic", CLASS+"/main()V");		
+		gen("invokestatic ", CLASS+"/main()V");		
 		gen("return");
 		gen(".limit","stack",25);
 		gen(".end","method");
@@ -1087,7 +1095,7 @@ public class CodeGenerating extends Visitor {
 				n.methodName.idinfo.methodReturnCode);
 
 		// Generate a static method call:
-		gen("invokestatic", CLASS+"/"+typeCode);
+		gen("invokestatic ", CLASS+"/"+typeCode);
 	}
 
 
@@ -1101,7 +1109,7 @@ public class CodeGenerating extends Visitor {
 				n.methodName.idinfo.methodReturnCode);
 
 		//Generate a static method call:
-		gen("invokestatic", CLASS+"/"+typeCode);
+		gen("invokestatic ", CLASS+"/"+typeCode);
 	}
 
 	// 1) if returnVal is non-Null, then translate it and generate an ireturn
