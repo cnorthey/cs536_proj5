@@ -121,7 +121,7 @@ public class CodeGenerating extends Visitor {
 	void storeGlobalInt(String name){
 		// Generate a store into an int static field from the stack:
 		// 		putstatic CLASS/name
-		gen("putstatic", CLASS+"/"+name);
+		gen("putstatic", CLASS+"/"+name+" I");
 	}
 
 	void storeLocalInt(int index){
@@ -321,10 +321,10 @@ public class CodeGenerating extends Visitor {
 		if(isNumericLit(initValue)){
 			// Generate a field declaration with initial value:
 			int numValue = getLitValue((exprNode)initValue);
-			gen(".field public static "+name+"I = "+numValue);
+			gen(".field public static "+name+" I = "+numValue);
 		} else {
 			// Generate a field declaration without an initial value:
-			gen(".field public static"+name+"I");
+			gen(".field public static"+name+" I");
 		}
 	}
 
@@ -332,7 +332,7 @@ public class CodeGenerating extends Visitor {
 		String arrayType = arrayTypeCode(type);
 
 		// Generate a field declaration for an array:
-		gen(".field public static "+name+" "+arrayType+"]"); // ]?
+		gen(".field public static "+name+" "+arrayType);
 	}
 
 	void allocateArray(typeNode type){
@@ -691,13 +691,9 @@ public class CodeGenerating extends Visitor {
 	// 3) translate morePrints
 	// NOTE: can only print int, bool, chars, char arrays, and strings
 	void visit(printNode n) {
-		//ignore work around from prev projs
-		if(n.outputValue instanceof strLitNode){
-			strLitNode temp = (strLitNode)n.outputValue;
-			if(temp.strval.compareTo("first") == 0){
-				this.visit(n.morePrints);
-				return;
-			}
+		if(n.outputValue.linenum == -1){
+			this.visit(n.morePrints);
+			return;
 		}
 		this.visit(n.outputValue); //step 1
 		if (n.outputValue.kind == ASTNode.Kinds.Array ||
@@ -708,7 +704,7 @@ public class CodeGenerating extends Visitor {
 		}else{ 
 			switch (n.outputValue.type){
 			case Integer:
-				gen("invokestatic"," CSXLib/printInteger(I)V");
+				gen("invokestatic"," CSXLib/printInt(I)V");
 				break;
 			case Boolean:
 				gen("invokestatic"," CSXLib/printBool(Z)V");
@@ -1091,8 +1087,7 @@ public class CodeGenerating extends Visitor {
 		this.visit(n.args);
 
 		// Build method's type code, for calling the method
-		String typeCode = buildTypeCode(n.methodName.idname, n.args,
-				n.methodName.idinfo.methodReturnCode);
+		String typeCode = buildTypeCode(n.methodName.idname, n.args,"V"); //TODO Not sure if this is correct
 
 		// Generate a static method call:
 		gen("invokestatic ", CLASS+"/"+typeCode);
@@ -1109,7 +1104,7 @@ public class CodeGenerating extends Visitor {
 				n.methodName.idinfo.methodReturnCode);
 
 		//Generate a static method call:
-		gen("invokestatic ", CLASS+"/"+typeCode);
+		gen("invokestatic", CLASS+"/"+typeCode);
 	}
 
 	// 1) if returnVal is non-Null, then translate it and generate an ireturn
