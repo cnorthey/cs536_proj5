@@ -29,6 +29,8 @@ class SymbolInfo extends Symb {
 	public String strVal; 	//val of String lit
 	public String topLabel; //for while loops
 	public String bottomLabel; // for while loops
+	public int numberOfLocals;
+	public String methodReturnCode;
 
 	public SymbolInfo(String id, ASTNode.Kinds k, ASTNode.Types t){    
 		super(id);
@@ -42,6 +44,7 @@ class SymbolInfo extends Symb {
 		strVal = null;
 		topLabel = null;
 		bottomLabel = null;
+		numberOfLocals = 0;
 	};
 	
 	public void setArraysize(int size){
