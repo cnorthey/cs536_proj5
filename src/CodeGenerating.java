@@ -134,6 +134,7 @@ public class CodeGenerating extends Visitor {
 	//DON'T load value addressed onto stack
 	void computeAdr(nameNode n){
 		if (n.subscriptVal.isNull()){ //simple unsubscribed identifier
+//System.out.println("kind: "+n.varName.idinfo); //is null...?
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
 					n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
 				if(n.varName.idinfo.adr == AdrMode.global){ 
@@ -692,33 +693,28 @@ public class CodeGenerating extends Visitor {
 	// NOTE: can only print int, bool, chars, char arrays, and strings
 	void visit(printNode n) {
 		//ignore work around from prev projs
-		if(n.outputValue instanceof strLitNode){
-			strLitNode temp = (strLitNode)n.outputValue;
-			if(temp.strval.compareTo("first") == 0){
-				this.visit(n.morePrints);
-				return;
-			}
-		}
-		this.visit(n.outputValue); //step 1
-		if (n.outputValue.kind == ASTNode.Kinds.Array ||
-				n.outputValue.kind == ASTNode.Kinds.ArrayParm){ //step 2
-			gen("invokestatic"," CSXLib/printCharArray([C)V");
-		}else if (n.outputValue.kind == ASTNode.Kinds.String){
-			gen("invokestatic"," CSXLib/printString(Ljava/lang/String;)V");
-		}else{ 
-			switch (n.outputValue.type){
-			case Integer:
-				gen("invokestatic"," CSXLib/printInteger(I)V");
-				break;
-			case Boolean:
-				gen("invokestatic"," CSXLib/printBool(Z)V");
-				break;
-			case Character:
-				gen("invokestatic"," CSXLib/printChar(C)V");
-				break;
-			default:
-				gen("ERROR: Invalid Type"); // Shouldn't happen TODO remove before end
-				break;
+		if(n.outputValue.linenum != -1){
+			this.visit(n.outputValue); //step 1
+			if (n.outputValue.kind == ASTNode.Kinds.Array ||
+					n.outputValue.kind == ASTNode.Kinds.ArrayParm){ //step 2
+				gen("invokestatic"," CSXLib/printCharArray([C)V");
+			}else if (n.outputValue.kind == ASTNode.Kinds.String){
+				gen("invokestatic"," CSXLib/printString(Ljava/lang/String;)V");
+			}else{ 
+				switch (n.outputValue.type){
+				case Integer:
+					gen("invokestatic"," CSXLib/printInt(I)V");
+					break;
+				case Boolean:
+					gen("invokestatic"," CSXLib/printBool(Z)V");
+					break;
+				case Character:
+					gen("invokestatic"," CSXLib/printChar(C)V");
+					break;
+				default:
+					gen("ERROR: Invalid Type"); // Shouldn't happen TODO remove before end
+					break;
+				}
 			}
 		}
 		this.visit(n.morePrints); //step 3
