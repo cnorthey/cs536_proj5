@@ -32,11 +32,29 @@ Jasmine to produce the bytecode. The main files we will be manipulating are:
 TO DO::
  x set up git repo
  x divvy up AST nodes a la Unparsing and P4
- - implement part I of instructions
- - implement part II of instructions
- - implement part III of instructions
- - implement part IV of instructions
+ x implement part I of instructions
+ x implement part II of instructions
+ x implement part III of instructions
+ x implement part IV of instructions
  - debugging:
    x get print to work
-   - get read to work
+   x get read to work
+
+arrays: 24, 25,
+
+     [echo] Begin execution of p25csx.class
+     [java] Exception in thread "main" java.lang.VerifyError: (class: p25csx, method: main signature: ()V) Expecting to find array of ints on stack
+     [java] 	at java.lang.Class.getDeclaredMethods0(Native Method)
+ 
+29, 
+     [java] Testing Program p29csx
+     [java] Exception in thread "main" java.lang.NoSuchFieldError: x$
+     [java] 	at p29csx.main(p29csx.j)
+     [java] 	at p29csx.main(p29csx.j)
+     [java] Java Result: 1
+
+
+30, 31, 32, 33, 36, 37, 38, 39, 40, 41, 42, 43, 46, 47
+
+
 

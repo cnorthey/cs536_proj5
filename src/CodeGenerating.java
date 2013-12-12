@@ -899,6 +899,7 @@ public class CodeGenerating extends Visitor {
 		else newTypeCode = newTypeCode +"("
 				+ buildTypeCode((argDeclsNode) n.args) + ")";
 		newTypeCode = newTypeCode + typeCode(n.returnType);
+System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
 		n.name.idinfo.methodReturnCode = typeCode(n.returnType);
 
 		gen(".method", " public static", newTypeCode);
@@ -1000,10 +1001,11 @@ public class CodeGenerating extends Visitor {
 		// the array in arrayName's field or local variable.
 	}
 
-	// 1) generate call to CSXLib.readInt() or Lib.readChar()...
+	// 1) generate call to CSXLib.readInt() or Lib.readChar()
 	//    depending on type of targetVar
 	// 2) generate store to targetVar
 	// 3) translate moreReads
+	// NOTE: can only read ints and chars
 	void visit(readNode n) {
 		//ignore work around from prev projs
 		if(n.targetVar.varName.linenum != -1){
@@ -1102,7 +1104,7 @@ public class CodeGenerating extends Visitor {
 		this.visit(n.methodArgs);
 		// Build method's type code, for calling the method
 		String typeCode = buildTypeCode(n.methodName.idname, n.methodArgs,
-				n.methodName.idinfo.methodReturnCode);
+				typeCode(n.type));
 
 		//Generate a static method call:
 		gen("invokestatic", CLASS+"/"+typeCode);
