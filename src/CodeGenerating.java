@@ -121,7 +121,7 @@ public class CodeGenerating extends Visitor {
 	void storeGlobalInt(String name){
 		// Generate a store into an int static field from the stack:
 		// 		putstatic CLASS/name
-		gen("putstatic", CLASS+"/"+name);
+		gen("putstatic", CLASS+"/"+name+" I");
 	}
 
 	void storeLocalInt(int index){
@@ -322,10 +322,10 @@ public class CodeGenerating extends Visitor {
 		if(isNumericLit(initValue)){
 			// Generate a field declaration with initial value:
 			int numValue = getLitValue((exprNode)initValue);
-			gen(".field public static "+name+"I = "+numValue);
+			gen(".field public static "+name+" I = "+numValue);
 		} else {
 			// Generate a field declaration without an initial value:
-			gen(".field public static"+name+"I");
+			gen(".field public static"+name+" I");
 		}
 	}
 
@@ -333,7 +333,7 @@ public class CodeGenerating extends Visitor {
 		String arrayType = arrayTypeCode(type);
 
 		// Generate a field declaration for an array:
-		gen(".field public static "+name+" "+arrayType+"]"); // ]?
+		gen(".field public static "+name+" "+arrayType);
 	}
 
 	void allocateArray(typeNode type){
@@ -1087,8 +1087,7 @@ public class CodeGenerating extends Visitor {
 		this.visit(n.args);
 
 		// Build method's type code, for calling the method
-		String typeCode = buildTypeCode(n.methodName.idname, n.args,
-				n.methodName.idinfo.methodReturnCode);
+		String typeCode = buildTypeCode(n.methodName.idname, n.args,"V"); //TODO Not sure if this is correct
 
 		// Generate a static method call:
 		gen("invokestatic ", CLASS+"/"+typeCode);
@@ -1105,7 +1104,7 @@ public class CodeGenerating extends Visitor {
 				n.methodName.idinfo.methodReturnCode);
 
 		//Generate a static method call:
-		gen("invokestatic ", CLASS+"/"+typeCode);
+		gen("invokestatic", CLASS+"/"+typeCode);
 	}
 
 	// 1) if returnVal is non-Null, then translate it and generate an ireturn
