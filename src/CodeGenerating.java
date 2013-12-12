@@ -134,7 +134,6 @@ public class CodeGenerating extends Visitor {
 	//DON'T load value addressed onto stack
 	void computeAdr(nameNode n){
 		if (n.subscriptVal.isNull()){ //simple unsubscribed identifier
-//System.out.println("kind: "+n.varName.idinfo); //is null...?
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
 					n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
 				if(n.varName.idinfo.adr == AdrMode.global){ 
@@ -217,7 +216,7 @@ public class CodeGenerating extends Visitor {
 		if (n.subscriptVal.isNull()){ //simple unsubscripted identifier
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var ||
 					n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm){ //scalar
-				if(n.varName.idinfo.adr == AdrMode.global){ 
+				if(n.adr == AdrMode.global){ 
 					storeGlobalInt(n.label);
 				} else { // local
 					storeLocalInt(n.varIndex);
@@ -1006,18 +1005,20 @@ public class CodeGenerating extends Visitor {
 	// 2) generate store to targetVar
 	// 3) translate moreReads
 	void visit(readNode n) {
-		computeAdr(n.targetVar);
-		if (n.targetVar.varName.idinfo.type == ASTNode.Types.Integer){ //step 1
-			gen("invokestatic"," CSXLib/readInt()I");
-		}else{
-			gen("invokestatic"," CSXLib/readChar()C");
+		//ignore work around from prev projs
+		if(n.targetVar.varName.linenum != -1){
+			computeAdr(n.targetVar);
+			if (n.targetVar.varName.idinfo.type == ASTNode.Types.Integer){ //step 1
+				gen("invokestatic"," CSXLib/readInt()I");
+			}else{
+				gen("invokestatic"," CSXLib/readChar()C");
+			}
+			storeName(n.targetVar); //step 2
 		}
-		storeName(n.targetVar); //step 2
 		this.visit(n.moreReads); //step 3
 	}
 
 	void visit(nullReadNode n) {}
-
 
 	void visit(charLitNode n) {
 		loadI(n.charval);
