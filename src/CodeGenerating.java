@@ -730,7 +730,6 @@ public class CodeGenerating extends Visitor {
 		// First translate the left and right operands
 		this.visit(n.leftOperand);
 		this.visit(n.rightOperand);
-
 		// Now the values of the operands are on the stack
 		// Generate JVM instruction corresponding to operatorCode.
 
@@ -771,7 +770,7 @@ public class CodeGenerating extends Visitor {
 		if(n.subscriptVal.isNull()){ //if non-subscripted
 			if(n.varName.idinfo.kind == ASTNode.Kinds.Var || //if scalar var or const
 					n.varName.idinfo.kind == ASTNode.Kinds.Value ||
-					n.varName.idinfo.kind == ASTNode.Kinds.Value ){ 
+					n.varName.idinfo.kind == ASTNode.Kinds.ScalarParm ){ 
 				if(n.varName.idinfo.adr == AdrMode.global){ //if global, has label
 					String label = n.varName.idinfo.label;
 					loadGlobalInt(label);
@@ -899,7 +898,6 @@ public class CodeGenerating extends Visitor {
 		else newTypeCode = newTypeCode +"("
 				+ buildTypeCode((argDeclsNode) n.args) + ")";
 		newTypeCode = newTypeCode + typeCode(n.returnType);
-System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
 		n.name.idinfo.methodReturnCode = typeCode(n.returnType);
 
 		gen(".method", " public static", newTypeCode);
@@ -1054,7 +1052,7 @@ System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
 
 	void visit(nullExprNode n) {}
 
-	// 1) create assembler labesl for head and exit
+	// 1) create assembler labels for head and exit
 	// 2) if label is non-null, store head and exit in label's
 	//    sym tabel entry
 	// 3) generate head label
@@ -1118,7 +1116,7 @@ System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
 		}else{
 			this.visit(n.returnVal); //step 1
 			gen("ireturn");
-		}	
+		}
 	}
 
 	//generate a jump to loop exit label stored in label's sym table entry

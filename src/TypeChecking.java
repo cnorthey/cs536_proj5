@@ -1084,6 +1084,7 @@ public class TypeChecking extends Visitor {
 						+currReturnType+".");
 			}
 		} else { //step 2
+			this.visit(n.returnVal);
 			exprNode temp = (exprNode)n.returnVal;
 			try{
 				assertCondition(isScalar(temp.kind) &&
