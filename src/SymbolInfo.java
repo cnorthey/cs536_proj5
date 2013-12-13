@@ -32,7 +32,6 @@ class SymbolInfo extends Symb {
 	public int numberOfLocals;
 	public String methodReturnCode;
 
-
 	public SymbolInfo(String id, ASTNode.Kinds k, ASTNode.Types t){    
 		super(id);
 		kind = k; type = t;

@@ -1,0 +1,743 @@
+/* CS 536: PROJECT 5 - CSX CODE GENERATOR
+ * 
+ * Caela Northey (cs login: caela)	905 653 2238 
+ * Alan Irish    (cs login: irish)  906 591 2819
+ *
+ * DUE DATE: FRIDAY DEC 13, 2013
+ *
+ */
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-23.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p23csx.j.
+     [echo] Run Jasmin on p23csx.j:
+     [java] Generated: p23csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p23csx.class
+     [java] Testing Program p23csx
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-24.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p24csx.j.
+     [echo] Run Jasmin on p24csx.j:
+     [java] Generated: p24csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p24csx.class
+     [java] Testing program p24csx
+     [java] 1	10	100	1000	10000
+     [java] 100000	1000000	10000000	100000000	1000000000
+     [java] false	true
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-25.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p25csx.j.
+     [echo] Run Jasmin on p25csx.j:
+     [java] Generated: p25csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p25csx.class
+     [java] Testing program p25csx
+     [java] Sorted values are:
+     [java] -1000000000	-10000000	-100000	-1000	-10
+     [java] 1	100	10000	1000000	100000000
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-26.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p26csx.j.
+     [echo] Run Jasmin on p26csx.j:
+     [java] Generated: p26csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p26csx.class
+     [java] Testing Program p26csx
+     [java] 
+     [java] Procedure 1 entered
+     [java] Procedure 1 exited
+     [java] Procedure 2 entered
+     [java] Procedure 2 exitedTest compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-27.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p27csx.j.
+     [echo] Run Jasmin on p27csx.j:
+     [java] Generated: p27csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p27csx.class
+     [java] Testing Program p27csx
+     [java] 
+     [java] Procedure 1 entered
+     [java] Procedure 1 exited123
+     [java] Procedure 2 entered
+     [java] Procedure 2 exitedtrue
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-28.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p28csx.j.
+     [echo] Run Jasmin on p28csx.j:
+     [java] Generated: p28csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p28csx.class
+     [java] Testing Program p28csx
+     [java] 
+     [java] Procedure 1 entered
+     [java] Procedure 1 exited
+     [java] Procedure 2 entered
+     [java] Procedure 1 entered
+     [java] Procedure 1 exited
+     [java] Procedure 2 exitedTest compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-29.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p29csx.j.
+     [echo] Run Jasmin on p29csx.j:
+     [java] Generated: p29csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p29csx.class
+     [java] Testing Program p29csx
+     [java] here
+     [java]  X = 0 Y = 0 Z = 0
+     [java] In procedure local1: Expecting 10 and 20
+     [java]    X = 10   Y = 20
+     [java]  X = 0 Y = 0 Z = 0
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-30.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p30csx.j.
+     [echo] Run Jasmin on p30csx.j:
+     [java] Generated: p30csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p30csx.class
+     [java] Testing Program p30csx
+     [java] 
+     [java] Factorial of 6 is 720
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-31.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p31csx.j.
+     [echo] Run Jasmin on p31csx.j:
+     [java] Generated: p31csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p31csx.class
+     [java] Testing Program p31csx
+     [java] 
+     [java] Procedure 1 enteredX1 = (10?) 10
+     [java] Procedure 1 exited
+     [java] Procedure 2 entered Y1 = (15?) 15
+     [java] Procedure 2 exited X = (10?)10 Y = (15?) 15
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-32.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p32csx.j.
+     [echo] Run Jasmin on p32csx.j:
+     [java] Generated: p32csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p32csx.class
+     [java] Testing Program p32csx
+     [java] Factorial of 1 is 1
+     [java] Factorial of 2 is 2
+     [java] Factorial of 3 is 6
+     [java] Factorial of 4 is 24
+     [java] Factorial of 5 is 120
+     [java] Factorial of 6 is 720
+     [java] Factorial of 7 is 5040
+     [java] Factorial of 8 is 40320
+     [java] Factorial of 9 is 362880
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-33.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p33csx.j.
+     [echo] Run Jasmin on p33csx.j:
+     [java] Generated: p33csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p33csx.class
+     [java] Testing Program p33csx
+     [java]  Output X = -20 * Y = -10 = 200
+     [java]  Output: Are both X(-20) and Y(-10) less than zero??
+     [java]    Answer is : true
+     [java]  Output X = 8 / Y = 4 = 2
+     [java]  Output X = 2 / Y = 4 = 0
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-36.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p36csx.j.
+     [echo] Run Jasmin on p36csx.j:
+     [java] Generated: p36csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p36csx.class
+     [java] Testing Program p36csx
+     [java] Fibonacci of 0 is 1
+     [java] Fibonacci of 1 is 1
+     [java] Fibonacci of 2 is 2
+     [java] Fibonacci of 3 is 3
+     [java] Fibonacci of 4 is 5
+     [java] Fibonacci of 5 is 8
+     [java] Fibonacci of 6 is 13
+     [java] Fibonacci of 7 is 21
+     [java] Fibonacci of 8 is 34
+     [java] Fibonacci of 9 is 55
+     [java] Fibonacci of 10 is 89
+     [java] Fibonacci of 11 is 144
+     [java] Fibonacci of 12 is 233
+     [java] Fibonacci of 13 is 377
+     [java] Fibonacci of 14 is 610
+     [java] Fibonacci of 15 is 987
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-37.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p37csx.j.
+     [echo] Run Jasmin on p37csx.j:
+     [java] Generated: p37csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p37csx.class
+     [java] Testing Program p37csx
+     [java] The grand sum is 45
+     [java] Test completed
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-38.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p38csx.j.
+     [echo] Run Jasmin on p38csx.j:
+     [java] Generated: p38csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p38csx.class
+     [java] Testing Program p38csx (8 queens problem)
+     [java] 
+     [java] Solution#1 is:
+     [java]  1 5 8 6 3 7 2 4
+     [java] 
+     [java] Solution#2 is:
+     [java]  1 6 8 3 7 4 2 5
+     [java] 
+     [java] Solution#3 is:
+     [java]  1 7 4 6 8 2 5 3
+     [java] 
+     [java] Solution#4 is:
+     [java]  1 7 5 8 2 4 6 3
+     [java] 
+     [java] Solution#5 is:
+     [java]  2 4 6 8 3 1 7 5
+     [java] 
+     [java] Solution#6 is:
+     [java]  2 5 7 1 3 8 6 4
+     [java] 
+     [java] Solution#7 is:
+     [java]  2 5 7 4 1 8 6 3
+     [java] 
+     [java] Solution#8 is:
+     [java]  2 6 1 7 4 8 3 5
+     [java] 
+     [java] Solution#9 is:
+     [java]  2 6 8 3 1 4 7 5
+     [java] 
+     [java] Solution#10 is:
+     [java]  2 7 3 6 8 5 1 4
+     [java] 
+     [java] Solution#11 is:
+     [java]  2 7 5 8 1 4 6 3
+     [java] 
+     [java] Solution#12 is:
+     [java]  2 8 6 1 3 5 7 4
+     [java] 
+     [java] Solution#13 is:
+     [java]  3 1 7 5 8 2 4 6
+     [java] 
+     [java] Solution#14 is:
+     [java]  3 5 2 8 1 7 4 6
+     [java] 
+     [java] Solution#15 is:
+     [java]  3 5 2 8 6 4 7 1
+     [java] 
+     [java] Solution#16 is:
+     [java]  3 5 7 1 4 2 8 6
+     [java] 
+     [java] Solution#17 is:
+     [java]  3 5 8 4 1 7 2 6
+     [java] 
+     [java] Solution#18 is:
+     [java]  3 6 2 5 8 1 7 4
+     [java] 
+     [java] Solution#19 is:
+     [java]  3 6 2 7 1 4 8 5
+     [java] 
+     [java] Solution#20 is:
+     [java]  3 6 2 7 5 1 8 4
+     [java] 
+     [java] Solution#21 is:
+     [java]  3 6 4 1 8 5 7 2
+     [java] 
+     [java] Solution#22 is:
+     [java]  3 6 4 2 8 5 7 1
+     [java] 
+     [java] Solution#23 is:
+     [java]  3 6 8 1 4 7 5 2
+     [java] 
+     [java] Solution#24 is:
+     [java]  3 6 8 1 5 7 2 4
+     [java] 
+     [java] Solution#25 is:
+     [java]  3 6 8 2 4 1 7 5
+     [java] 
+     [java] Solution#26 is:
+     [java]  3 7 2 8 5 1 4 6
+     [java] 
+     [java] Solution#27 is:
+     [java]  3 7 2 8 6 4 1 5
+     [java] 
+     [java] Solution#28 is:
+     [java]  3 8 4 7 1 6 2 5
+     [java] 
+     [java] Solution#29 is:
+     [java]  4 1 5 8 2 7 3 6
+     [java] 
+     [java] Solution#30 is:
+     [java]  4 1 5 8 6 3 7 2
+     [java] 
+     [java] Solution#31 is:
+     [java]  4 2 5 8 6 1 3 7
+     [java] 
+     [java] Solution#32 is:
+     [java]  4 2 7 3 6 8 1 5
+     [java] 
+     [java] Solution#33 is:
+     [java]  4 2 7 3 6 8 5 1
+     [java] 
+     [java] Solution#34 is:
+     [java]  4 2 7 5 1 8 6 3
+     [java] 
+     [java] Solution#35 is:
+     [java]  4 2 8 5 7 1 3 6
+     [java] 
+     [java] Solution#36 is:
+     [java]  4 2 8 6 1 3 5 7
+     [java] 
+     [java] Solution#37 is:
+     [java]  4 6 1 5 2 8 3 7
+     [java] 
+     [java] Solution#38 is:
+     [java]  4 6 8 2 7 1 3 5
+     [java] 
+     [java] Solution#39 is:
+     [java]  4 6 8 3 1 7 5 2
+     [java] 
+     [java] Solution#40 is:
+     [java]  4 7 1 8 5 2 6 3
+     [java] 
+     [java] Solution#41 is:
+     [java]  4 7 3 8 2 5 1 6
+     [java] 
+     [java] Solution#42 is:
+     [java]  4 7 5 2 6 1 3 8
+     [java] 
+     [java] Solution#43 is:
+     [java]  4 7 5 3 1 6 8 2
+     [java] 
+     [java] Solution#44 is:
+     [java]  4 8 1 3 6 2 7 5
+     [java] 
+     [java] Solution#45 is:
+     [java]  4 8 1 5 7 2 6 3
+     [java] 
+     [java] Solution#46 is:
+     [java]  4 8 5 3 1 7 2 6
+     [java] 
+     [java] Solution#47 is:
+     [java]  5 1 4 6 8 2 7 3
+     [java] 
+     [java] Solution#48 is:
+     [java]  5 1 8 4 2 7 3 6
+     [java] 
+     [java] Solution#49 is:
+     [java]  5 1 8 6 3 7 2 4
+     [java] 
+     [java] Solution#50 is:
+     [java]  5 2 4 6 8 3 1 7
+     [java] 
+     [java] Solution#51 is:
+     [java]  5 2 4 7 3 8 6 1
+     [java] 
+     [java] Solution#52 is:
+     [java]  5 2 6 1 7 4 8 3
+     [java] 
+     [java] Solution#53 is:
+     [java]  5 2 8 1 4 7 3 6
+     [java] 
+     [java] Solution#54 is:
+     [java]  5 3 1 6 8 2 4 7
+     [java] 
+     [java] Solution#55 is:
+     [java]  5 3 1 7 2 8 6 4
+     [java] 
+     [java] Solution#56 is:
+     [java]  5 3 8 4 7 1 6 2
+     [java] 
+     [java] Solution#57 is:
+     [java]  5 7 1 3 8 6 4 2
+     [java] 
+     [java] Solution#58 is:
+     [java]  5 7 1 4 2 8 6 3
+     [java] 
+     [java] Solution#59 is:
+     [java]  5 7 2 4 8 1 3 6
+     [java] 
+     [java] Solution#60 is:
+     [java]  5 7 2 6 3 1 4 8
+     [java] 
+     [java] Solution#61 is:
+     [java]  5 7 2 6 3 1 8 4
+     [java] 
+     [java] Solution#62 is:
+     [java]  5 7 4 1 3 8 6 2
+     [java] 
+     [java] Solution#63 is:
+     [java]  5 8 4 1 3 6 2 7
+     [java] 
+     [java] Solution#64 is:
+     [java]  5 8 4 1 7 2 6 3
+     [java] 
+     [java] Solution#65 is:
+     [java]  6 1 5 2 8 3 7 4
+     [java] 
+     [java] Solution#66 is:
+     [java]  6 2 7 1 3 5 8 4
+     [java] 
+     [java] Solution#67 is:
+     [java]  6 2 7 1 4 8 5 3
+     [java] 
+     [java] Solution#68 is:
+     [java]  6 3 1 7 5 8 2 4
+     [java] 
+     [java] Solution#69 is:
+     [java]  6 3 1 8 4 2 7 5
+     [java] 
+     [java] Solution#70 is:
+     [java]  6 3 1 8 5 2 4 7
+     [java] 
+     [java] Solution#71 is:
+     [java]  6 3 5 7 1 4 2 8
+     [java] 
+     [java] Solution#72 is:
+     [java]  6 3 5 8 1 4 2 7
+     [java] 
+     [java] Solution#73 is:
+     [java]  6 3 7 2 4 8 1 5
+     [java] 
+     [java] Solution#74 is:
+     [java]  6 3 7 2 8 5 1 4
+     [java] 
+     [java] Solution#75 is:
+     [java]  6 3 7 4 1 8 2 5
+     [java] 
+     [java] Solution#76 is:
+     [java]  6 4 1 5 8 2 7 3
+     [java] 
+     [java] Solution#77 is:
+     [java]  6 4 2 8 5 7 1 3
+     [java] 
+     [java] Solution#78 is:
+     [java]  6 4 7 1 3 5 2 8
+     [java] 
+     [java] Solution#79 is:
+     [java]  6 4 7 1 8 2 5 3
+     [java] 
+     [java] Solution#80 is:
+     [java]  6 8 2 4 1 7 5 3
+     [java] 
+     [java] Solution#81 is:
+     [java]  7 1 3 8 6 4 2 5
+     [java] 
+     [java] Solution#82 is:
+     [java]  7 2 4 1 8 5 3 6
+     [java] 
+     [java] Solution#83 is:
+     [java]  7 2 6 3 1 4 8 5
+     [java] 
+     [java] Solution#84 is:
+     [java]  7 3 1 6 8 5 2 4
+     [java] 
+     [java] Solution#85 is:
+     [java]  7 3 8 2 5 1 6 4
+     [java] 
+     [java] Solution#86 is:
+     [java]  7 4 2 5 8 1 3 6
+     [java] 
+     [java] Solution#87 is:
+     [java]  7 4 2 8 6 1 3 5
+     [java] 
+     [java] Solution#88 is:
+     [java]  7 5 3 1 6 8 2 4
+     [java] 
+     [java] Solution#89 is:
+     [java]  8 2 4 1 7 5 3 6
+     [java] 
+     [java] Solution#90 is:
+     [java]  8 2 5 3 1 7 4 6
+     [java] 
+     [java] Solution#91 is:
+     [java]  8 3 1 6 2 5 7 4
+     [java] 
+     [java] Solution#92 is:
+     [java]  8 4 1 3 6 2 7 5
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-39.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p39csx.j.
+     [echo] Run Jasmin on p39csx.j:
+     [java] Generated: p39csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p39csx.class
+     [java] Testing program p39csx
+     [java] Sorted values (ascending order) are:
+     [java] -1000000000	-10000000	-100000	-1000	-10
+     [java] 1	100	10000	1000000	100000000
+     [java] Sorted values (descending order) are:
+     [java] 100000000	1000000	10000	100	1
+     [java] -10	-1000	-100000	-10000000	-1000000000
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-40.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p40csx.j.
+     [echo] Run Jasmin on p40csx.j:
+     [java] Generated: p40csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p40csx.class
+     [java] Testing Program p40csx
+     [java] 1+2+3+4 = 10
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-41.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p41csx.j.
+     [echo] Run Jasmin on p41csx.j:
+     [java] Generated: p41csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p41csx.class
+     [java] Testing Program p41csx
+     [java] 1+2+3+4+5+6+7 = 28
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-42.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p42csx.j.
+     [echo] Run Jasmin on p42csx.j:
+     [java] Generated: p42csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p42csx.class
+     [java] Testing Program p42csx
+     [java] 100+1 = 101
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-43.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p43csx.j.
+     [echo] Run Jasmin on p43csx.j:
+     [java] Generated: p43csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p43csx.class
+     [java] break at a = 5
+     [java] a = 0
+     [java] a = 1
+     [java] a = 2
+     [java] a = 3
+     [java] a = 4
+     [java] a = 6
+     [java] a = 7
+     [java] a = 8
+     [java] a = 9
+     [java] a = 5 should not have been written
+     [java] Test completed
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-44.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p44csx.j.
+     [echo] Run Jasmin on p44csx.j:
+     [java] Generated: p44csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p44csx.class
+     [java] This should print
+     [java] This should also print
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-45.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p45csx.j.
+     [echo] Run Jasmin on p45csx.j:
+     [java] Generated: p45csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p45csx.class
+     [java] int value of myChar = 97
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-46.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p46csx.j.
+     [echo] Run Jasmin on p46csx.j:
+     [java] Generated: p46csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p46csx.class
+     [java] myIntArray[0] = 0
+     [java] myIntArray[1] = 1
+     [java] myIntArray[2] = 2
+     [java] myIntArray[3] = 3
+     [java] myIntArray[4] = 4
+     [java] myIntArray[5] = 5
+     [java] myIntArray[6] = 6
+     [java] myIntArray[7] = 7
+     [java] myIntArray[8] = 8
+     [java] myIntArray[9] = 9
+     [java] myCharArray[0] = a
+     [java] myCharArray[1] = b
+     [java] myCharArray[2] = c
+     [java] myCharArray[3] = d
+     [java] myCharArray[4] = e
+     [java] This should only print once
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-47.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p47csx.j.
+     [echo] Run Jasmin on p47csx.j:
+     [java] Generated: p47csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p47csx.class
+     [java] myIntArray2[0] = 0
+     [java] myIntArray2[1] = 1
+     [java] myIntArray2[2] = 2
+     [java] myIntArray2[3] = 3
+     [java] myIntArray2[4] = 4
+     [java] myIntArray2[5] = 5
+     [java] myIntArray2[6] = 6
+     [java] myIntArray2[7] = 7
+     [java] myIntArray2[8] = 8
+     [java] myIntArray2[9] = 9
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-48.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p48csx.j.
+     [echo] Run Jasmin on p48csx.j:
+     [java] Generated: p48csx.class
+     [move] Moving 1 file to /afs/cs.wisc.edu/u/c/a/caela/private/cs536/proj5/cs 536 project 5/bin
+     [echo] Begin execution of p48csx.class
+     [java] This is a string assignment

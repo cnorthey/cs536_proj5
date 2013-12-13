@@ -1,4 +1,12 @@
-/*  This is the driver of the compilation process.
+/* CS 536: PROJECT 5 - CSX CODE GENERATOR
+ * 
+ * Caela Northey (cs login: caela)	905 653 2238 
+ * Alan Irish    (cs login: irish)  906 591 2819
+ *
+ * DUE DATE: FRIDAY DEC 13, 2013
+ *
+ ***************************************************
+ * This is the driver of the compilation process.
  *  The CSX Lite program is scanned and parsed, and an AST is built.
  *  The AST is then type checked and code is generated.
  *   You'll need to update this to handle ASTs rooted by classNodes
@@ -35,7 +43,11 @@ public class CSX {
 
     parser csxParser = new parser(); 
 
-    System.out.println ("\n\n" + "Begin CSX compilation of " +
+    System.out.println ("\n\n" + 
+ "CS 536: PROJECT 5 - CSX CODE GENERATOR\n\n"+
+ "Caela Northey (cs login: caela) 905 653 2238\n"+
+ "Alan Irish    (cs login: irish) 906 591 2819\n\n"+
+"Begin CSX compilation of " +
 			fileName + ".\n");
     Symbol root=null;
     try {
