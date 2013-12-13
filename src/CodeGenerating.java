@@ -8,10 +8,8 @@
  ***************************************************
  *
  *  This Visitor class generates JVM assembler code (using Jasmin's format)
- *  for CSX lite in the Printstream afile. You'll need to extend it to
- *  handle all of CSX. Note that for some AST nodes (like asgNode) code generation
- *  for CSX is more complex than that needed for CSX lite.
- *  All methods marked TODO will have to be completed by you (for full CSX)
+ *  for CSX in the Printstream afile. We have extended it to
+ *  handle all of CSX. 
  */
 
 import java.io.*;
@@ -181,7 +179,7 @@ public class CodeGenerating extends Visitor {
 			else//(id.idinfo.adr == AdrMode.local)
 				storeLocalInt(id.idinfo.varIndex);
 		} else {
-			// TODO This is based on the expanded version of the storeName method, it may need further changes
+			// This is based on the expanded version of the storeName method
 			//array
 			//push ref to target to check length
 			switch (id.type){
@@ -195,17 +193,17 @@ public class CodeGenerating extends Visitor {
 				gen("invokestatic"," CSXLib/checkCharArrayLength([C[C)[C");
 				break;
 			default:
-				gen("ERROR: Invalid Type"); //TODO remove before end
+				gen("ERROR: Invalid Type"); // Should not occur
 				break;
 			}
 			
 			//store source array into target var
 			if(id.idinfo.adr == AdrMode.global){
 				//n.label = n.varName.idinfo.label;
-				id.label = id.idinfo.label; // TODO not sure if correct
+				id.label = id.idinfo.label;
 				storeGlobalReference(id.label, arrayTypeCode(id.idinfo.type));
 			} else { //local
-				id.varIndex = id.idinfo.varIndex; //Not sure if correct TODO
+				id.varIndex = id.idinfo.varIndex; 
 				storeLocalReference(id.varIndex);
 			}
 
@@ -234,7 +232,7 @@ public class CodeGenerating extends Visitor {
 					gen("invokestatic"," CSXLib/checkCharArrayLength([C[C)[C");
 					break;
 				default:
-					gen("ERROR: Invalid Type"); //TODO remove before end
+					gen("ERROR: Invalid Type"); // Should not occur
 					break;
 				}
 				//store source array into target var
@@ -260,7 +258,7 @@ public class CodeGenerating extends Visitor {
 				gen("castore");
 				break;
 			default:
-				gen("ERROR: Invalid type"); //TODO remove before end
+				gen("ERROR: Invalid type"); // Should not occur
 				break;
 			}
 		}
@@ -356,7 +354,7 @@ public class CodeGenerating extends Visitor {
 			return "[C";
 		else if(type instanceof boolTypeNode)
 			return "[Z";
-		return "ERROR: Invalid type";	//TODO remove before end
+		return "ERROR: Invalid type";	// Should not occur
 	}
 
 	String arrayTypeCode(ASTNode.Types type){
@@ -365,7 +363,7 @@ public class CodeGenerating extends Visitor {
 		case Integer: return "[I";
 		case Character: return "[C";
 		case Boolean: return "[Z";
-		default: return "ERROR: Invalid type"; //TODO remove before end
+		default: return "ERROR: Invalid type"; // Should not occur
 		}
 	}
 
@@ -389,7 +387,7 @@ public class CodeGenerating extends Visitor {
 			return "Z";
 		else if(type instanceof voidTypeNode)
 			return "V";
-		else return "ERROR: Invalid type"; //TODO remove before end
+		else return "ERROR: Invalid type"; // Should not occur
 	}
 
 	String typeCode(ASTNode.Types type){
@@ -403,7 +401,7 @@ public class CodeGenerating extends Visitor {
 			return "Z";
 		case Void:
 			return "V";
-		default: return "ERROR: Invalid type"; //TODO remove before end
+		default: return "ERROR: Invalid type"; // Should not occur
 		}
 	}
 
@@ -423,7 +421,7 @@ public class CodeGenerating extends Visitor {
 	}
 
 	String buildTypeCode(exprNode n){
-		if(n.kind == ASTNode.Kinds.Array || n.kind == ASTNode.Kinds.ArrayParm) //TODO is this correct?
+		if(n.kind == ASTNode.Kinds.Array || n.kind == ASTNode.Kinds.ArrayParm)
 			return arrayTypeCode(n.type);
 		else return typeCode(n.type);
 	}
@@ -453,7 +451,7 @@ public class CodeGenerating extends Visitor {
 		gen("astore", index);
 	}
 
-	// TODO Void type? no type given in spec, no return so going with void
+	// no type given in spec, no return so going with void
 	void declField(varDeclNode n){
 		String varLabel = n.varName.idname +"$"; //Append $ to avoid conflicts
 		declGlobalInt(varLabel, n.initValue);
@@ -633,7 +631,7 @@ public class CodeGenerating extends Visitor {
 		//check if source should be cloned or converted,
 		if (n.source.kind == ASTNode.Kinds.Array ||
 				n.source.kind == ASTNode.Kinds.ArrayParm){ //step 1
-			switch (n.source.type){ //TODO is this correct? (originally switch(n.type))
+			switch (n.source.type){
 			case Integer:
 				gen("invokestatic"," CSXLib/cloneIntArray([I)[I");
 				break;
@@ -706,7 +704,7 @@ public class CodeGenerating extends Visitor {
 					gen("invokestatic"," CSXLib/printChar(C)V");
 					break;
 				default:
-					gen("ERROR: Invalid Type"); // Shouldn't happen TODO remove before end
+					gen("ERROR: Invalid Type"); // Should not occur
 					break;
 				}
 			}
@@ -744,7 +742,6 @@ public class CodeGenerating extends Visitor {
 		//   context of identNode is known
 		// Hence no code generation actions are defined here 
 		// (though you may want/need to define some in full CSX)
-		// TODO Is there anything needed here?
 	}
 
 	void visit(intLitNode n) {
@@ -842,7 +839,6 @@ public class CodeGenerating extends Visitor {
 	}
 
 	void visit(memberDeclsNode n) {
-		// TODO is anything needed here?
 		// Translate fields,
 		// Then translate methods
 		this.visit(n.fields);
@@ -1080,7 +1076,7 @@ public class CodeGenerating extends Visitor {
 		this.visit(n.args);
 
 		// Build method's type code, for calling the method
-		String typeCode = buildTypeCode(n.methodName.idname, n.args,"V"); //TODO Not sure if this is correct
+		String typeCode = buildTypeCode(n.methodName.idname, n.args,"V");
 
 		// Generate a static method call:
 		gen("invokestatic ", CLASS+"/"+typeCode);
@@ -1177,7 +1173,7 @@ public class CodeGenerating extends Visitor {
 				gen("caload");
 				break;
 			default:
-				gen("ERROR: Invalid type"); //TODO remove before end
+				gen("ERROR: Invalid type"); // Should not occur
 				break;
 			}
 			loadI(1); //step 2.e
@@ -1209,7 +1205,7 @@ public class CodeGenerating extends Visitor {
 				gen("caload");
 				break;
 			default:
-				gen("ERROR: Invalid type"); //TODO remove before end
+				gen("ERROR: Invalid type"); // Should not occur
 				break;
 			}
 			loadI(1); //step 2.e

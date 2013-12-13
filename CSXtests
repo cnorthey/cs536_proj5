@@ -10,6 +10,369 @@
 test2:
      [java] 
      [java] 
+     [java] Begin CSX compilation of test-00.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p00csx.j.
+     [echo] Run Jasmin on p00csx.j:
+     [java] Generated: p00csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p00csx.class
+     [java] Testing Program p00csx
+     [java] Test compeleted
+     
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-01.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p01csx.j.
+     [echo] Run Jasmin on p01csx.j:
+     [java] Generated: p01csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p01csx.class
+     [java] Testing Program p01csx
+     [java] 0-123456123456
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-02.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p02csx.j.
+     [echo] Run Jasmin on p02csx.j:
+     [java] Generated: p02csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p02csx.class
+     [java] Testing Program p01csx
+     [java] falsetrue
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-03.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p03csx.j.
+     [echo] Run Jasmin on p03csx.j:
+     [java] Generated: p03csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p03csx.class
+     [java] Testing program p03csx
+     [java] i1 = 123
+     [java] i2 = true
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-04.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p04csx.j.
+     [echo] Run Jasmin on p04csx.j:
+     [java] Generated: p04csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p04csx.class
+     [java] Testing program p04csx
+     [java] i1 = 123
+     [java] i2 = false
+     
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-05.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p05csx.j.
+     [echo] Run Jasmin on p05csx.j:
+     [java] Generated: p05csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p05csx.class
+     [java] Testing program p05csx
+     [java] i1 = 123
+     [java] i2 = false
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-06.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p06csx.j.
+     [echo] Run Jasmin on p06csx.j:
+     [java] Generated: p06csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p06csx.class
+     [java] Testing program p06csx
+     [java] if then stmt works
+     [java] if then else stmt works
+     [java] if then else stmt works
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-07.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p07csx.j.
+     [echo] Run Jasmin on p07csx.j:
+     [java] Generated: p07csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p07csx.class
+     [java] Testing program p07csx
+     [java] 10	-20	-200	-19
+     [java] 1	0	1	10
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-08.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p08csx.j.
+     [echo] Run Jasmin on p08csx.j:
+     [java] Generated: p08csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p08csx.class
+     [java] Testing program p08csx
+     [java] true	false
+     [java] true	false	false	false
+     [java] true	false
+     [java] true	false	true	true
+     [java] true	false	false	true
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-09.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p09csx.j.
+     [echo] Run Jasmin on p09csx.j:
+     [java] Generated: p09csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p09csx.class
+     [java] Testing program p09csx
+     [java] true	false	true	false
+     [java] true	false
+     [java] false	true	false	false
+     [java] true	true
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-10.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p10csx.j.
+     [echo] Run Jasmin on p10csx.j:
+     [java] Generated: p10csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p10csx.class
+     [java] Testing program p10csx
+     [java] true	false	true	false
+     [java] true	false
+     [java] false	true	false	false
+     [java] true	true
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-11.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p11csx.j.
+     [echo] Run Jasmin on p11csx.j:
+     [java] Generated: p11csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p11csx.class
+     [java] Testing program p11csx
+     [java] Enter an integer:
+5
+     [java] The integer you entered was 5
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-12.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p12csx.j.
+     [echo] Run Jasmin on p12csx.j:
+     [java] Generated: p12csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p12csx.class
+     [java] Testing program p12csx
+     [java] i = 100
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-13.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p13csx.j.
+     [echo] Run Jasmin on p13csx.j:
+     [java] Generated: p13csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p13csx.class
+     [java] Testing program p13csx
+     [java] i = 1001
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-14.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p14csx.j.
+     [echo] Run Jasmin on p14csx.j:
+     [java] Generated: p14csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p14csx.class
+     [java] Testing program p14csx
+     [java] 
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-15.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p15csx.j.
+     [echo] Run Jasmin on p15csx.j:
+     [java] Generated: p15csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p15csx.class
+     [java] Testing program p15csx
+     [java] The value of i is 100
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-16.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p16csx.j.
+     [echo] Run Jasmin on p16csx.j:
+     [java] Generated: p16csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p16csx.class
+     [java] Testing program p16csx
+     [java] The value of sum is 10000
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-18.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p18csx.j.
+     [echo] Run Jasmin on p18csx.j:
+     [java] Generated: p18csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p18csx.class
+     [java] Testing Program p18csx
+-5
+-13
+20
+     [java] Testing print:  Ouput is 100030002000
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-19.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p19csx.j.
+     [echo] Run Jasmin on p19csx.j:
+     [java] Generated: p19csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p19csx.class
+     [java] Testing Program p19csx
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-20.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p20csx.j.
+     [echo] Run Jasmin on p20csx.j:
+     [java] Generated: p20csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p20csx.class
+     [java] Testing Program p20csx
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-21.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p21csx.j.
+     [echo] Run Jasmin on p21csx.j:
+     [java] Generated: p21csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p21csx.class
+     [java] Testing Program p21csx
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
+     [java] Begin CSX compilation of test-22.csx.
+     [java] 
+     [java] CSX program parsed correctly.
+     [java] CSX compilation successfully completed.
+     [java] Translated program is in p22csx.j.
+     [echo] Run Jasmin on p22csx.j:
+     [java] Generated: p22csx.class
+     [move] Moving 1 file to /Users/airish/Programming/Java/CS536/cs 536 project 5/bin
+     [echo] Begin execution of p22csx.class
+     [java] Testing Program p22csx
+     [java] Iteration 1
+     [java] Iteration 2
+     [java] Iteration 3
+     [java] Iteration 4
+     [java] ( 11 )
+     [java] ( 12 )
+     [java] ( 21 )
+     [java] ( 22 )
+     [java] i = 3 j = 2
+     [java] Test compeleted
+
+test2:
+     [java] 
+     [java] 
      [java] Begin CSX compilation of test-23.csx.
      [java] 
      [java] CSX program parsed correctly.

@@ -28,6 +28,9 @@ Jasmine to produce the bytecode. The main files we will be manipulating are:
  - CSX.java: main driver for the CSX compilation process.
 
  - Other relevant files: TypeChecker.java(P4), csx.jlex(P3), csx.cup(P2)
+ 
+ - CSXTests: This contains our expected output of running test2 on the tests
+   that were provided in the project folder.
 
 TO DO::
  x set up git repo
