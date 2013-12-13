@@ -5,6 +5,16 @@
  *
  * DUE DATE: FRIDAY NOV 22, 2013
  */
+/* CS 536: PROJECT 5 - CSX CODE GENERATOR
+ * 
+ * Caela Northey (cs login: caela)	905 653 2238 
+ * Alan Irish    (cs login: irish)  906 591 2819
+ *
+ * DUE DATE: FRIDAY DEC 13, 2013
+ *
+ * minor fixes made after proj 4
+ *
+ ***************************************************/
 
 // The following methods type check  AST nodes used in CSX Lite
 //  You will need to complete the methods after line 238 to type check the
@@ -950,7 +960,7 @@ public class TypeChecking extends Visitor {
 				{ System.out.println("here"); }
 				catch (EmptySTException e) 
 				{ System.out.println("here1"); }
-
+				this.visit(n.label);
 			}
 			this.visit(n.loopBody); // 4c
 			id.kind = ASTNode.Kinds.HiddenLabel; //4d
@@ -973,6 +983,7 @@ public class TypeChecking extends Visitor {
 			typeErrors++;
 			System.out.println(error(n) + "Label "+n.label.idname+" out of scope.");
 		}
+		this.visit(n.label);
 	}
 
 	void visit(continueNode n){
@@ -989,6 +1000,7 @@ public class TypeChecking extends Visitor {
 			typeErrors++;
 			System.out.println(error(n) + "Label "+n.label.idname+" out of scope.");
 		}
+		this.visit(n.label);
 	}
 
 	// 1) check that identNode.idname is declared in sym table with type

@@ -9,6 +9,7 @@
  *  This defines AST classes for CSX
  *  Little, if any, of this needs to be changed
  * 
+ *  minor changes made to (exprNode)
  */
 
 // abstract superclass; only subclasses are actually created   

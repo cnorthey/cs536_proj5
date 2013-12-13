@@ -1,8 +1,7 @@
-CS 536: PROJECT 4 - CSX CODE GENERATOR
+CS 536: PROJECT 5 - CSX CODE GENERATOR
 
 Caela Northey (cs login: caela)	905 653 2238 
 Alan Irish    (cs login: irish) 906 591 2819
-
 
 DUE DATE: FRIDAY DEC 13, 2013
 
@@ -14,7 +13,8 @@ abstract syntax tree node by node to generate assembly code for the JVM using
 Jasmine to produce the bytecode. The main files we will be manipulating are:
 
  - CodeGenerating.java: first, we added an enum to track different addressing
-   modes (global, local, literal, stack, and none).
+   modes (global, local, literal, stack, and none). Then we expanded the
+   CSXLite sample version to include the full CSX features.
 
  - SymbolInfo.java: added additional fields to be used in conjunction with
    addressing mode considerations. Besides one for an ArdMode value, other
@@ -22,12 +22,12 @@ Jasmine to produce the bytecode. The main files we will be manipulating are:
    varIndex if the Symbol is a local variable, etc. See Part I of the Code
    Generation Routines for more information.
 
- - ast.java: one change was made to the exprNode constuctor; a field for an
-   addressing mode was added. 
+ - ast.java: several additional fields were added to exprNode (e.g. for an
+   addressing mode was added) as needed.
 
  - CSX.java: main driver for the CSX compilation process.
 
- - Other relevant files:
+ - Other relevant files: TypeChecker.java(P4), csx.jlex(P3), csx.cup(P2)
 
 TO DO::
  x set up git repo
@@ -36,13 +36,7 @@ TO DO::
  x implement part II of instructions
  x implement part III of instructions
  x implement part IV of instructions
- - debugging:
+ x debugging:
    x get print to work
    x get read to work
-
-array cloning: 47
- 
-31, 33, 36, 37, 38, 40, 41, 42, 43,
-
-
-
+   x pass all tests

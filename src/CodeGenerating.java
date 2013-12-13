@@ -313,7 +313,7 @@ public class CodeGenerating extends Visitor {
 			return 1;
 		else if(e instanceof falseNode)
 			return 0;
-		System.out.println("ERROR: Invalid Type"); // TODO Shouldn't occur, remove before submitting
+	
 		return 0;
 	}
 
@@ -345,8 +345,6 @@ public class CodeGenerating extends Visitor {
 		} else if(type instanceof boolTypeNode){
 			// Generate a newarray instruction for a boolean array:
 			gen("newarray", "boolean");
-		} else {
-			System.out.println("ERROR: Invalid type"); // TODO remove before end
 		}
 	}
 
@@ -637,16 +635,13 @@ public class CodeGenerating extends Visitor {
 				n.source.kind == ASTNode.Kinds.ArrayParm){ //step 1
 			switch (n.source.type){ //TODO is this correct? (originally switch(n.type))
 			case Integer:
-				gen("invokestatic"," CSXLib/cloneIntArrayLength([I)[I");
+				gen("invokestatic"," CSXLib/cloneIntArray([I)[I");
 				break;
 			case Boolean:
-				gen("invokestatic"," CSXLib/cloneBoolArrayLength([Z)[Z");
+				gen("invokestatic"," CSXLib/cloneBoolArray([Z)[Z");
 				break;
 			case Character:
-				gen("invokestatic"," CSXLib/cloneCharArrayLength([C)[C");
-				break;
-			default:
-				System.out.println("ERROR: Invalid type"); //TODO remove before end
+				gen("invokestatic"," CSXLib/cloneCharArray([C)[C");
 				break;
 			}
 		}else if (n.source.kind == ASTNode.Kinds.String){ //step 2
@@ -809,9 +804,6 @@ public class CodeGenerating extends Visitor {
 			case Character: //caload
 				gen("caload");
 				break;
-			default:
-				System.out.println("ERROR: Invalid type"); //TODO remove before end
-				break;
 			}
 		}
 
@@ -898,7 +890,6 @@ public class CodeGenerating extends Visitor {
 		else newTypeCode = newTypeCode +"("
 				+ buildTypeCode((argDeclsNode) n.args) + ")";
 		newTypeCode = newTypeCode + typeCode(n.returnType);
-		//System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
 		n.name.idinfo.methodReturnCode = typeCode(n.returnType);
 
 		gen(".method", " public static", newTypeCode);
