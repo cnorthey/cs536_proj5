@@ -324,7 +324,7 @@ public class CodeGenerating extends Visitor {
 			gen(".field public static "+name+" I = "+numValue);
 		} else {
 			// Generate a field declaration without an initial value:
-			gen(".field public static"+name+" I");
+			gen(".field public static "+name+" I");
 		}
 	}
 
