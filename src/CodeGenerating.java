@@ -22,7 +22,7 @@ public class CodeGenerating extends Visitor {
 
 	int cgErrors =  0;       // Total number of code generation errors 
 
-	int numberOfLocals =  0; // Total number of local CSX-lite vars
+	int numberOfLocals =  0; // Total number of local CSX vars
 
 	int labelCnt = 0;	// counter used to generate unique labels
 
@@ -251,13 +251,13 @@ public class CodeGenerating extends Visitor {
 			//are already pushed; now store source val into array
 			switch(n.type){
 			case Integer: //iaload
-				gen("iaload");
+				gen("iastore");
 				break;
 			case Boolean: //baload
-				gen("baload");
+				gen("bastore");
 				break;
 			case Character: //caload
-				gen("caload");
+				gen("castore");
 				break;
 			default:
 				gen("ERROR: Invalid type"); //TODO remove before end
@@ -338,7 +338,7 @@ public class CodeGenerating extends Visitor {
 	void allocateArray(typeNode type){
 		if(type instanceof intTypeNode){
 			// Generate a newarray instruction for an integer array:
-			gen("newarray","int");
+			gen("newarray int");
 		} else if(type instanceof charTypeNode){
 			// Generate a newarray instruction for a character array:
 			gen("newarray","char");
@@ -899,7 +899,7 @@ public class CodeGenerating extends Visitor {
 		else newTypeCode = newTypeCode +"("
 				+ buildTypeCode((argDeclsNode) n.args) + ")";
 		newTypeCode = newTypeCode + typeCode(n.returnType);
-System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
+		System.out.println("type: "+typeCode(n.returnType)+" "+n.returnType);
 		n.name.idinfo.methodReturnCode = typeCode(n.returnType);
 
 		gen(".method", " public static", newTypeCode);
